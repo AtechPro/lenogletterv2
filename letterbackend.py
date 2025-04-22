@@ -280,35 +280,66 @@ class SignatureSection:
         pdf.cell(0, 6, "LENOG SDN BHD", ln=True)
 
 
-def generate_pdf(data):
-    """Generate a PDF document for a technical proposal based on the provided data."""
+
+# Define a mapping of document types to their respective sections
+DOCUMENT_SECTIONS = {
+    'ack': [
+        AckSection,
+        ClarificationSection,
+        SignatureSection
+    ],
+    'cl': [
+        CoverLetterSection,
+        ClarificationSection,
+        SignatureSection
+    ],
+    'scope': [
+        ScopeSection,
+        CompClarificationSection,
+        SignatureSection
+    ],
+    'toc': [
+        ToCSection,
+        CompClarificationSection,
+        SignatureSection
+    ],
+    # Add more document types and their sections as needed
+}
+
+def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf"):
+
+    # Use predefined sections if document_type is provided and sections are not
+    if document_type and not sections:
+        sections = DOCUMENT_SECTIONS.get(document_type)
+        if not sections:
+            raise ValueError(f"No predefined sections found for document type '{document_type}'.")
+    
+    # If sections are still not provided, use default sections
+    if sections is None:
+        sections = [
+            AckSection,
+            ClarificationSection,
+            SignatureSection
+        ]
+    
+    # Initialize PDF
     pdf = PDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     
-    # CV
-    #CoverLetterSection.add(pdf, data)
-    #ClarificationSection.add(pdf, data)
-
-
-    # Scope of Work
-    #ScopeSection.add(pdf, data)
-    #CompClarificationSection.add(pdf, data)
-    #
-
-    # ToC
-    #ToCSection.add(pdf, data)
-    #CompClarificationSection.add(pdf, data)
+    # Add header
+    pdf.header()
     
-    # Ack
-    AckSection.add(pdf, data)
-    ClarificationSection.add(pdf, data)
-
-
-    SignatureSection.add(pdf, data)
+    # Add each section
+    for section_class in sections:
+        try:
+            section_method = getattr(section_class, 'add')
+            section_method(pdf, data)
+        except Exception as e:
+            print(f"Error adding section {section_class.__name__}: {e}")
     
     # Save the PDF
-    pdf.output("ack.pdf")
+    pdf.output(output_path)
 
 
 # Example usage
@@ -338,7 +369,8 @@ data = {
     "designation": "Project Manager"
 }
 
-
-
-# Generate PDF with user-provided data
-generate_pdf(data)
+# Generate the PDF with the specified sections
+generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
+#generate_pdf(data, document_type='cl', output_path="cover_letter.pdf")
+#generate_pdf(data, document_type='scope', output_path="scope_letter.pdf")
+#generate_pdf(data, document_type='toc', output_path="toc_letter.pdf")
