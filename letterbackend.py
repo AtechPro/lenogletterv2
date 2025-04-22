@@ -26,21 +26,25 @@ class CoverLetterSection:
         pdf.cell(0, 10, 'COVER LETTER (TECHNICAL PROPOSAL)', align='C', ln=True)
         pdf.ln(10)
         
-        # Reference, Contract Title, Subject
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'REFERENCE NO :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("REFERENCE NO", "").upper(), ln=True)
+        def add_labeled_cell(pdf, label, key, data_dict, width=60):
+            pdf.set_font("Arial", size=12, style='B')
+            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.set_font("Arial", size=12, style='BU')
+            text = data_dict.get(key, "").upper()
+            if len(text) > 0:
+                pdf.multi_cell(0, 10, text, align='L')
+            else:
+                pdf.cell(0, 10, '', ln=True)
+            pdf.ln(2)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'CONTRACT TITLE :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("CONTRACT TITLE", "").upper(), ln=True)
+        # Add Reference
+        add_labeled_cell(pdf, 'REFERENCE NO', 'REFERENCE NO', data)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'SUBJECT :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("SUBJECT", "").upper(), ln=True)
+        # Add Contract Title
+        add_labeled_cell(pdf, 'CONTRACT TITLE', 'CONTRACT TITLE', data)
+
+        # Add Subject
+        add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
         pdf.ln(10)
         
@@ -82,20 +86,25 @@ class ScopeSection:
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'REFERENCE NO :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("REFERENCE NO", "").upper(), ln=True)
+        def add_labeled_cell(pdf, label, key, data_dict, width=60):
+            pdf.set_font("Arial", size=12, style='B')
+            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.set_font("Arial", size=12, style='BU')
+            text = data_dict.get(key, "").upper()
+            if len(text) > 0:
+                pdf.multi_cell(0, 10, text, align='L')
+            else:
+                pdf.cell(0, 10, '', ln=True)
+            pdf.ln(2)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'CONTRACT TITLE :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("CONTRACT TITLE", "").upper(), ln=True)
+        # Add Reference
+        add_labeled_cell(pdf, 'REFERENCE NO', 'REFERENCE NO', data)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'SUBJECT :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("SUBJECT", "").upper(), ln=True)
+        # Add Contract Title
+        add_labeled_cell(pdf, 'CONTRACT TITLE', 'CONTRACT TITLE', data)
+
+        # Add Subject
+        add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
         pdf.ln(10)
         
@@ -130,20 +139,25 @@ class ToCSection:
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'REFERENCE NO :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("REFERENCE NO", "").upper(), ln=True)
+        def add_labeled_cell(pdf, label, key, data_dict, width=60):
+            pdf.set_font("Arial", size=12, style='B')
+            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.set_font("Arial", size=12, style='BU')
+            text = data_dict.get(key, "").upper()
+            if len(text) > 0:
+                pdf.multi_cell(0, 10, text, align='L')
+            else:
+                pdf.cell(0, 10, '', ln=True)
+            pdf.ln(2)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'CONTRACT TITLE :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("CONTRACT TITLE", "").upper(), ln=True)
+        # Add Reference
+        add_labeled_cell(pdf, 'REFERENCE NO', 'REFERENCE NO', data)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'SUBJECT :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("SUBJECT", "").upper(), ln=True)
+        # Add Contract Title
+        add_labeled_cell(pdf, 'CONTRACT TITLE', 'CONTRACT TITLE', data)
+
+        # Add Subject
+        add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
         pdf.ln(10)
         
@@ -178,20 +192,25 @@ class AckSection:
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'REFERENCE NO :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("REFERENCE NO", "").upper(), ln=True)
+        def add_labeled_cell(pdf, label, key, data_dict, width=60):
+            pdf.set_font("Arial", size=12, style='B')
+            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.set_font("Arial", size=12, style='BU')
+            text = data_dict.get(key, "").upper()
+            if len(text) > 0:
+                pdf.multi_cell(0, 10, text, align='L')
+            else:
+                pdf.cell(0, 10, '', ln=True)
+            pdf.ln(2)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'CONTRACT TITLE :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("CONTRACT TITLE", "").upper(), ln=True)
+        # Add Reference
+        add_labeled_cell(pdf, 'REFERENCE NO', 'REFERENCE NO', data)
 
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(60, 10, 'SUBJECT :')
-        pdf.set_font("Arial", size=12, style='BU')
-        pdf.cell(0, 10, data.get("SUBJECT", "").upper(), ln=True)
+        # Add Contract Title
+        add_labeled_cell(pdf, 'CONTRACT TITLE', 'CONTRACT TITLE', data)
+
+        # Add Subject
+        add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
         pdf.ln(10)
         
@@ -239,19 +258,32 @@ class CompClarificationSection:
 class SignatureSection:
     @staticmethod
     def add(pdf, data):
-        """Add the signature section to the PDF"""
+        """Add the signature section to the PDF, ensuring it doesn't break the layout."""
+        # Calculate the space required for the signature section
+        REQUIRED_HEIGHT = 10 + 20 + 5 + 6 + 6 + 6 + 5  # Approximate height based on font sizes and spacing
+
+        # Current vertical position
+        current_y = pdf.get_y()
+        page_height = pdf.h - pdf.b_margin  # Total height minus bottom margin
+
+        # Check if the signature section fits on the current page
+        if current_y + REQUIRED_HEIGHT > page_height:
+            pdf.add_page()  # Add a new page
+            current_y = pdf.get_y()  # Update the current vertical position
+
         # Thank you message
         pdf.set_font("Arial", "", 12)
         pdf.cell(0, 10, "Thank you and best regards,", align='L', ln=True)
+
         # Signature image
         contact_image = data.get('contact_image_path', '')
         if contact_image and os.path.exists(contact_image):
             SIGNATURE_WIDTH = 60
             SIGNATURE_HEIGHT = 20
-            
+
             signature_x = 10
-            signature_y = pdf.y
-            
+            signature_y = pdf.get_y()
+
             pdf.image(
                 contact_image, 
                 x=signature_x, 
@@ -259,16 +291,17 @@ class SignatureSection:
                 w=SIGNATURE_WIDTH,
                 h=SIGNATURE_HEIGHT
             )
-            
+
             pdf.ln(SIGNATURE_HEIGHT + 5)
         else:
             pdf.cell(0, 10, "[Signature Not Available]", ln=True)
             pdf.ln(20)
-        
+
         # Underline
         pdf.set_draw_color(0, 0, 0)  # Set color to black
         pdf.set_line_width(0.5)  # Set line width
-        pdf.line(10, pdf.y, 70, pdf.y)  # Draw a line with predefined width of 60
+        pdf.line(10, pdf.get_y(), 70, pdf.get_y())  # Draw a line with predefined width of 60
+
         # Name and designation
         pdf.set_font("Arial", "B", 12)  
         pdf.cell(0, 6, data.get('Contact title', ''), ln=True)
@@ -343,34 +376,48 @@ def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf")
 
 
 # Example usage
-data = {
-    "REFERENCE NO": "REF-12345",
-    "CONTRACT TITLE": "contract with something with something",
-    "SUBJECT": "Technical Proposal for Exploration Services",
-    "documents": [
+# Define a function to dynamically create the data dictionary
+def create_data(reference_no, contract_title, subject, documents, contact_title, contact_no, contact_email, contact_image_path, designation):
+    return {
+        "REFERENCE NO": reference_no,
+        "CONTRACT TITLE": contract_title,
+        "SUBJECT": subject,
+        "documents": documents,
+        "Contact title": contact_title,
+        "no": contact_no,
+        "email": contact_email,
+        "contact_image_path": contact_image_path,
+        "designation": designation
+}
+
+# Example data
+data = create_data(
+    reference_no="REF-12345",
+    contract_title="contract with something with something fdsfasfsadfs",
+    subject="Technical Proposal for Exploration Services fsda fas fsad fsadfas",
+    documents=[
         'Cover letter for technical proposal',
         'Exhibit I (Scope of Work)',
         'Exhibit III (Unpriced schedule of rates)',
         'HSE Documents',
         'Key Personnel CV / Resume',
         'Company Experience',
-        'Letter of compliance to Scope of Work',
-        'Letter of compliance to Terms and Condition of Contracts',
-        'Agency Letter', 
         'Company Profile',
-        'Company Organization Chart',
         'Company Registration Certificate',
+        'Company Insurance Certificate',
+        'Company Bank Statement',
+        'Company Tax Clearance Certificate',
+
     ],
-    "Contact title": "Dwayne Marshall Labangka",
-    "no": "+60 12-3456789",
-    "email": "dwayne.marshall@company.com",
-    "contact_image_path": "Signature/Dwayne Marshall Labangka.jpg",
-    "signature_width": 40,
-    "designation": "Project Manager"
-}
+    contact_title="Dwayne Marshall Labangka",
+    contact_no="+60 12-3456789",
+    contact_email="dwayne.marshall@company.com",
+    contact_image_path="Signature/Dwayne Marshall Labangka.jpg",
+    designation="Project Manager"
+)
 
 # Generate the PDF with the specified sections
-generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
+#generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
 #generate_pdf(data, document_type='cl', output_path="cover_letter.pdf")
 #generate_pdf(data, document_type='scope', output_path="scope_letter.pdf")
 #generate_pdf(data, document_type='toc', output_path="toc_letter.pdf")
