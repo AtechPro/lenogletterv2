@@ -375,46 +375,101 @@ def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf")
     pdf.output(output_path)
 
 
-# Example usage
-# Define a function to dynamically create the data dictionary
-def create_data(reference_no, contract_title, subject, documents, contact_title, contact_no, contact_email, contact_image_path, designation):
+
+
+USE_NAS_SIGNATURES = False  # Toggle this to switch between local and NAS paths
+
+# Contact dictionary
+CONTACTS = {
+    "Dwayne Marshall Labangka": {
+        "Contact title": "Dwayne Marshall Labangka",
+        "no": "+60 13-8340611",
+        "email": "dwayne.ml@lenog.com.my",
+        "contact_image_path": "Dwayne Marshall Labangka"
+    },
+    "Cheok Jia Jun": {
+        "Contact title": "Cheok Jia Jun",
+        "no": "+60 11-1980 1595",
+        "email": "juncheok@lenog.com.my",
+        "contact_image_path": "Cheok Jia Jun"
+    },
+    "Sao Lip Zhou": {
+        "Contact title": "Sao Lip Zhou",
+        "no": "+60 XX-XXXXXXX",
+        "email": "sao.lip.zhou@lenog.com.my",
+        "contact_image_path": "Sao Lip Zhou"
+    },
+    "Asmin Mandja": {
+        "Contact title": "Asmin Mandja",
+        "no": "+60 10-935 4835",
+        "email": "asmin.mandja@lenog.com.my",
+        "contact_image_path": "Asmin Mandja"
+    },
+    "Mohd Suhailin Siman": {
+        "Contact title": "Mohd Suhailin Siman",
+        "no": "+60 XXX-XXXXXXX",
+        "email": "mohd.suhailin.siman@lenog.com.my",
+        "contact_image_path": "Mohd Suhailin Siman"
+    }
+}
+
+def resolve_signature_path(name):
+    """Resolve the correct path for the signature image."""
+    # If USE_NAS_SIGNATURES is True, use the NAS directory
+    if USE_NAS_SIGNATURES:
+        base_dir = "Z:\\Technical\\Engineering\\Lenog\\QAQC\\Report\\Signatures"
+    else:
+        base_dir = "Signature"  # Local directory
+    
+    # Try different image formats (.jpg, .png) for the signature
+    for ext in [".jpg", ".png"]:
+        full_path = os.path.join(base_dir, name + ext)
+        if os.path.exists(full_path):  # Check if file exists
+            return full_path
+
+    return None  # Return None if no signature image is found
+
+
+def create_data(reference_no, contract_title, subject, documents, contact_name, designation):
+    """Create a data dictionary for the contract with contact information."""
+    contact_info = CONTACTS.get(contact_name, {})
+    # Get the signature path based on the flag (local or NAS)
+    contact_image_path = resolve_signature_path(contact_info.get("contact_image_path", contact_name))
+    
     return {
         "REFERENCE NO": reference_no,
         "CONTRACT TITLE": contract_title,
         "SUBJECT": subject,
         "documents": documents,
-        "Contact title": contact_title,
-        "no": contact_no,
-        "email": contact_email,
-        "contact_image_path": contact_image_path,
+        "Contact title": contact_info.get("Contact title", contact_name),
+        "no": contact_info.get("no", ""),
+        "email": contact_info.get("email", ""),
+        "contact_image_path": contact_image_path if contact_image_path else "Default/SignatureNotFound.jpg",  # Fallback image if not found
         "designation": designation
-}
+    }
+
 
 # Example data
-data = create_data(
-    reference_no="REF-12345",
-    contract_title="contract with something with something fdsfasfsadfs",
-    subject="Technical Proposal for Exploration Services fsda fas fsad fsadfas",
-    documents=[
-        'Cover letter for technical proposal',
-        'Exhibit I (Scope of Work)',
-        'Exhibit III (Unpriced schedule of rates)',
-        'HSE Documents',
-        'Key Personnel CV / Resume',
-        'Company Experience',
-        'Company Profile',
-        'Company Registration Certificate',
-        'Company Insurance Certificate',
-        'Company Bank Statement',
-        'Company Tax Clearance Certificate',
 
+"""
+
+data = create_data(
+    reference_no="REF-2025-001",
+    contract_title="Flange Joint Management",
+    subject="Proposal for Flange Joint Integrity Work",
+    documents=[
+        "Cover Letter",
+        "Scope of Work",
+        "Company Profile",
+        "Insurance & Certifications",
     ],
-    contact_title="Dwayne Marshall Labangka",
-    contact_no="+60 12-3456789",
-    contact_email="dwayne.marshall@company.com",
-    contact_image_path="Signature/Dwayne Marshall Labangka.jpg",
-    designation="Project Manager"
+    contact_name="Dwayne Marshall Labangka",
+    designation="Project Engineer"
 )
+
+
+
+"""
 
 # Generate the PDF with the specified sections
 #generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
