@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acknowledgement Letter Form</title>
+    <link rel="stylesheet" href="./static/styles.css">
+</head>
+<body>
+    <h1>Generate Acknowledgement Letter</h1>
+    <form method="POST" action="/toc">
+        <label for="reference_no">Reference No:</label>
+        <input type="text" id="reference_no" name="reference_no" required><br>
+
+        <label for="contract_title">Contract Title:</label>
+        <input type="text" id="contract_title" name="contract_title" required><br>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required><br>
+
+        <label for="contact_name">Contact Name:</label>
+        <select id="contact_name" name="contact_name" required>
+            <option value="Dwayne Marshall Labangka">Dwayne Marshall Labangka</option>
+            <option value="Cheok Jia Jun">Cheok Jia Jun</option>
+            <option value="Sao Lip Zhou">Sao Lip Zhou</option>
+            <option value="Asmin Mandja">Asmin Mandja</option>
+            <option value="Mohd Suhailin Siman">Mohd Suhailin Siman</option>
+        </select><br>
+
+        <label for="designation">Designation:</label>
+        <select id="designation" name="designation" required>
+            <option value="Dwayne Marshall Labangka">Project Manager</option>
+            <option value="Technical Manager">Technical Manager</option>
+            <option value="Technical Engineer">Technical Engineer</option>
+            <option value="Managing Director">Managing Director</option>
+            <option value="Operation Manager">Operation Manager</option>
+        </select><br>
+
+
+        <button type="submit">Generate Letter</button>
+    </form>
+</body>
+</html>
