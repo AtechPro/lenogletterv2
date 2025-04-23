@@ -123,16 +123,24 @@ class UI: #UI Class
 
     def open_new_window(self, letter_type):
         """Open a new window for letter generation based on letter type"""
+        # Set window size and title based on letter type
+        if letter_type == "cl":
+            window_width = 750  # Larger width for Cover Letter
+            window_height = 900  # Larger height for Cover Letter
+            window_title = "Generate COVER LETTER"
+        else:
+            window_width = 750
+            window_height = 600
+            window_title = f"Generate {letter_type.upper()} Letter"
+
         new_window = ctk.CTkToplevel(self.root)
-        new_window.geometry("750x600")
-        new_window.title(f"Generate {letter_type.upper()} Letter")
+        new_window.geometry(f"{window_width}x{window_height}")
+        new_window.title(window_title)
         new_window.attributes("-topmost", True)
 
         # Center the window
         screen_width = new_window.winfo_screenwidth()
         screen_height = new_window.winfo_screenheight()
-        window_width = 750
-        window_height = 600
         x = (screen_width // 2) - (window_width // 2)
         y = (screen_height // 2) - (window_height // 2)
         new_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
@@ -140,17 +148,17 @@ class UI: #UI Class
         # Widgets - Common for all letter types
         reference_no_label = ctk.CTkLabel(new_window, text="Reference No.")
         reference_no_label.pack(padx=24, anchor="nw", pady=(30, 3))
-        reference_no_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        reference_no_entry = ctk.CTkEntry(new_window, width=window_width - 30, height=30)
         reference_no_entry.pack(padx=20, anchor="nw")
 
         contract_title_label = ctk.CTkLabel(new_window, text="Contract Title")
         contract_title_label.pack(padx=24, anchor="nw", pady=(10, 3))
-        contract_title_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        contract_title_entry = ctk.CTkEntry(new_window, width=window_width - 30, height=30)
         contract_title_entry.pack(padx=20, anchor="nw")
 
         subject_label = ctk.CTkLabel(new_window, text="Subject")
         subject_label.pack(padx=24, anchor="nw", pady=(10, 3))
-        subject_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        subject_entry = ctk.CTkEntry(new_window, width=window_width - 30, height=30)
         subject_entry.pack(padx=20, anchor="nw")
 
         contact_label = ctk.CTkLabel(new_window, text="Contact Person")
@@ -158,7 +166,7 @@ class UI: #UI Class
         contact_combo = ctk.CTkComboBox(
             new_window,
             values=list(letterbackend.CONTACTS.keys()),
-            width=720,
+            width=window_width - 30,
             height=30,
         )
         contact_combo.pack(padx=20, anchor="nw")
@@ -168,20 +176,70 @@ class UI: #UI Class
         designation_combo = ctk.CTkComboBox(
             new_window,
             values=["Project Manager", "Technical Manager", "Operation Manager", "Managing Director", "Technical Engineer"],
-            width=720,
+            width=window_width - 30,
             height=30,
         )
         designation_combo.pack(padx=20, pady=(0, 30), anchor="nw")
 
         # Specific input for Cover Letter
         if letter_type == "cl":
-            documents_label = ctk.CTkLabel(new_window, text="Documents (comma-separated)")
-            documents_label.pack(padx=24, anchor="nw", pady=(10, 3))
-            documents_entry = ctk.CTkEntry(new_window, width=720, height=30)
-            documents_entry.pack(padx=20, anchor="nw")
-            generate_command = lambda: self.generate_pdf(new_window, letter_type, reference_no_entry.get(), contract_title_entry.get(), subject_entry.get(), contact_combo.get(), designation_combo.get(), documents_entry.get().split(','))
+            # Predefined documents for Cover Letter
+            predefined_documents = [
+                "Cover letter for technical proposal",
+                "Exhibit I (Scope of Work)",
+                "Exhibit III (Unpriced schedule of rates)",
+                "HSE Documents",
+                "Key Personnel CV / Resume",
+                "Company Experience",
+                "Letter of compliance to Scope of Work",
+                "Letter of compliance to Terms and Condition of Contracts",
+                "Agency Letter",			
+            ]
+
+            # Label for predefined documents section
+            predefined_docs_label = ctk.CTkLabel(new_window, text="Select Predefined Documents:")
+            predefined_docs_label.pack(padx=24, anchor="nw", pady=(10, 3))
+
+            # Dictionary to store checkbox variables
+            document_vars = {}
+
+            # Add checkboxes for predefined documents
+            for doc in predefined_documents:
+                var = ctk.BooleanVar()  # Variable to track checkbox state
+                checkbox = ctk.CTkCheckBox(new_window, text=doc, variable=var)
+                checkbox.pack(padx=24, anchor="nw", pady=(5, 0))
+                document_vars[doc] = var  # Store the variable for later use
+
+            # Label for custom documents section
+            custom_docs_label = ctk.CTkLabel(new_window, text="Add Custom Documents (comma-separated):")
+            custom_docs_label.pack(padx=24, anchor="nw", pady=(15, 3))
+
+            # Text box for custom documents
+            custom_docs_entry = ctk.CTkEntry(new_window, width=window_width - 30, height=30)
+            custom_docs_entry.pack(padx=20, anchor="nw")
+
+            generate_command = lambda: self.generate_pdf(
+                new_window,
+                letter_type,
+                reference_no_entry.get(),
+                contract_title_entry.get(),
+                subject_entry.get(),
+                contact_combo.get(),
+                designation_combo.get(),
+                [doc for doc, var in document_vars.items() if var.get()] +  # Selected predefined documents
+                [doc.strip() for doc in custom_docs_entry.get().split(",") if doc.strip()]  # Custom documents
+            )
         else:
-            generate_command = lambda: self.generate_pdf(new_window, letter_type, reference_no_entry.get(), contract_title_entry.get(), subject_entry.get(), contact_combo.get(), designation_combo.get(), [])
+            generate_command = lambda: self.generate_pdf(
+                new_window,
+                letter_type,
+                reference_no_entry.get(),
+                contract_title_entry.get(),
+                subject_entry.get(),
+                contact_combo.get(),
+                designation_combo.get(),
+                []
+            )
 
         # Combined Save & Print Button
         save_and_print_button = ctk.CTkButton(
@@ -193,6 +251,7 @@ class UI: #UI Class
         save_and_print_button.pack(padx=20, anchor="nw", pady=25)
         close_button = ctk.CTkButton(new_window, text="Close", command=new_window.destroy, width=150)
         close_button.pack(padx=20, anchor="nw")
+
 
     def generate_pdf(self, window, letter_type, reference_no, contract_title, subject, contact_name, designation, documents):
         """Call the backend to generate the PDF and close the window"""
@@ -218,12 +277,11 @@ class UI: #UI Class
         try:
             letterbackend.generate_pdf(data, document_type=letter_type, output_path=output_filename)
             ctk.messagebox.showinfo("Success", f"PDF '{output_filename}' generated successfully!")
-            window.destroy() # Close the generation window after successful generation
+            window.destroy()  # Close the generation window after successful generation
         except ValueError as e:
             ctk.messagebox.showerror("Error", str(e))
         except Exception as e:
             ctk.messagebox.showerror("Error", f"An error occurred: {e}")
-
 class App:
     def __init__(self, root):
         self.root = root
