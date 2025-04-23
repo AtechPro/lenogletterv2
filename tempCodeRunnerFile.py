@@ -13,14 +13,6 @@ def index():
     """Landing page with links to different letter forms."""
     return render_template('main.html')
 
-PDF_NAME_MAP = {
-    'cl': '1. Cover Letter - Technical Proposal.pdf',
-    'ack': '2. Letter of Acknowledgement - EXHIBIT V.pdf',
-    'scope': '3. Letter of Compliance - Attachment A - Scope of Work.pdf',
-    'toc': '4. Letter of Compliance - Terms and Conditions.pdf',
-}
-
-
 @app.route('/<letter_type>', methods=['GET', 'POST'])
 def letter_form(letter_type):
     """Form for generating a specific type of letter."""
@@ -33,10 +25,10 @@ def letter_form(letter_type):
         designation = request.form.get('designation')
 
         # Predefine documents based on letter_type
-        if letter_type != 'cl':
+        if letter_type != 'cl':  # Add predefined documents for non-cl types
             documents = ["test"]  # You can replace "test" with any predefined value(s)
         else:
-            documents = request.form.get('documents').split(',')  # No documents for 'cl' letter type
+            documents = documents = request.form.get('documents').split(',')  # No documents for 'cl' letter type
 
         # Create data dictionary
         data = create_data(
@@ -48,13 +40,8 @@ def letter_form(letter_type):
             designation=designation
         )
 
-        # Get the corresponding filename from the mapping
-        pdf_filename = PDF_NAME_MAP.get(letter_type)
-        if not pdf_filename:
-            return "Invalid letter type", 404
-
-        # Generate PDF with the dynamic filename
-        output_path = os.path.join(app.config['OUTPUT_FOLDER'], pdf_filename)
+        # Generate PDF
+        output_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{letter_type}.pdf")
         generate_pdf(data=data, document_type=letter_type, output_path=output_path)
 
         # Redirect to PDF viewer
@@ -66,38 +53,18 @@ def letter_form(letter_type):
 @app.route('/view/<letter_type>')
 def view_pdf(letter_type):
     """Render the generated PDF in the browser."""
-    # Get the corresponding filename from the mapping
-    pdf_filename = PDF_NAME_MAP.get(letter_type)
-    if not pdf_filename:
-        return "Invalid letter type", 404
-
-    # Construct the full path to the PDF file
-    pdf_path = os.path.join(app.config['OUTPUT_FOLDER'], pdf_filename)
-
-    # Check if the PDF file exists
+    pdf_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{letter_type}.pdf")
     if not os.path.exists(pdf_path):
         return "PDF not found", 404
+    return render_template('view_pdf.html', pdf_path=pdf_path)
 
-    # Pass only the filename to the template
-    return render_template('view_pdf.html', pdf_filename=pdf_filename)
-
-@app.route('/output/<path:filename>')
+@app.route('/static/<path:filename>')
 def serve_static(filename):
-    # Sanitize the filename to prevent directory traversal attacks
-    safe_filename = os.path.basename(filename)
-    file_path = os.path.join(app.config['OUTPUT_FOLDER'], safe_filename)
-    
-    # Check if the file exists
+    """Serve static files (e.g., PDFs)."""
+    file_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
     if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")  # Debugging log
         return "File not found", 404
-    
-    # Serve the file
     return send_file(file_path)
-
-@app.route('/favicon.ico')
-def favicon():
-    return '', 204  # HTTP 204: No Content
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

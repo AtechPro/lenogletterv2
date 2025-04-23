@@ -21,16 +21,17 @@
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
     </style>
+    <!-- Include PDFObject library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.12/pdfobject.min.js"></script>
 </head>
 <body>
-    <div class="pdf-container">
-        <iframe src="{{ pdf_path }}" type="application/pdf"></iframe>
-    </div>
+    <div class="pdf-container" id="pdf-viewer"></div>
+
+    <script>
+        const pdfPath = "{{ url_for('serve_static', filename=pdf_filename) }}";
+        console.log("PDF Path:", pdfPath);  // Debugging log
+        PDFObject.embed(pdfPath, "#pdf-viewer");
+    </script>
 </body>
 </html>
