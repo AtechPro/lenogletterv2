@@ -32,18 +32,23 @@ def letter_form(letter_type):
         contact_name = request.form.get('contact_name')
         designation = request.form.get('designation')
 
-        # Predefine documents based on letter_type
+        # Handle document selection
         if letter_type != 'cl':
-            documents = ["test"]  # You can replace "test" with any predefined value(s)
+            documents = ["test"]  # Predefined documents for non-cl letters
         else:
-            documents = request.form.get('documents').split(',')  # No documents for 'cl' letter type
-
+            # Get all selected documents from checkboxes (will be a list)
+            documents = request.form.getlist('documents[]')
+            
+            # If no documents were selected, provide an empty list
+            if not documents:
+                documents = []
+        
         # Create data dictionary
         data = create_data(
             reference_no=reference_no,
             contract_title=contract_title,
             subject=subject,
-            documents=documents,  # Pass predefined or None
+            documents=documents,
             contact_name=contact_name,
             designation=designation
         )

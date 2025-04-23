@@ -10,22 +10,40 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Change to column layout for the back button */
             align-items: center;
             height: 100vh;
             background-color: #f4f4f9;
         }
         .pdf-container {
             width: 90%;
-            height: 90%;
+            height: 85%; /* Adjust height to accommodate the back button */
             border: 1px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .back-button {
+            margin-top: 10px; /* Space between the PDF viewer and the button */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
         }
     </style>
     <!-- Include PDFObject library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.12/pdfobject.min.js"></script>
 </head>
 <body>
+    <!-- Back Button -->
+    <a href="/" class="back-button">Back to Main</a>
+
+    <!-- PDF Viewer Container -->
     <div class="pdf-container" id="pdf-viewer"></div>
 
     <script>
