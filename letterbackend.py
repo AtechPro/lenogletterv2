@@ -122,10 +122,10 @@ class ScopeSection:
         pdf.set_font("Arial", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Arial", "", 12)  # Reset to normal font
-
         pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ATTACHMENT A - SCOPE OF WORKS.\n")
+        pdf.ln(3)
         pdf.write(10, "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Scope of Work, and we are fully committed to meet and comply with all the stipulated requirements, scopes, terms and conditions.\n")
-        pdf.ln(2)
+        pdf.ln(3)
 
 class ToCSection:
     @staticmethod
@@ -454,9 +454,9 @@ def create_data(reference_no, contract_title, subject, documents, contact_name, 
 """
 
 data = create_data(
-    reference_no="REF-2025-001",
-    contract_title="Flange Joint Management",
-    subject="Proposal for Flange Joint Integrity Work",
+    reference_no="REF-2025-001fasdfsafasfas",
+    contract_title="Flange Joint Management fadsfasdfasdfasdf",
+    subject="Proposal for Flange Joint Integrity Work fsdafasfasdfsdafdsafdsa",
     documents=[
         "Cover Letter",
         "Scope of Work",
@@ -468,8 +468,8 @@ data = create_data(
 )
 
 
-
 """
+
 
 # Generate the PDF with the specified sections
 #generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
