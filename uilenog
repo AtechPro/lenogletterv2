@@ -1,0 +1,236 @@
+import customtkinter as ctk
+import os
+import letterbackend  # Assuming your backend is in letterbackend.py
+
+class UI: #UI Class
+    def __init__(self, root, app):
+        # Initialize customtkinter
+        ctk.set_appearance_mode("Dark")  # Modes: "System" (default), "Dark", "Light"
+        ctk.set_default_color_theme("green")  # Themes: "blue" (default), "green", "dark-blue"
+
+        # Create the main window
+        self.root = root
+        self.root.title("Letter GUI - Lenog")
+        self.root.geometry("1100x700")
+        self.root.configure(bg="black")
+        self.root._state_before_windows_set_titlebar_color = "zoomed"
+
+        # Define the base directory relative to the current script location
+        basedir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icons")
+        self.root.iconbitmap(os.path.join(basedir, "Lenog Logo (Icon).ico"))
+
+        # Store reference to the main application
+        self.app = app
+
+        # PDF Handler
+        self.pdf_handler = app.pdf_handler
+
+        # Main Frame
+        self.main_frame = ctk.CTkFrame(
+            master=self.root, bg_color="#242424", fg_color="#2c2c2c", corner_radius=5
+        )
+        self.main_frame.pack(padx=10, pady=10, side="left", fill="both", expand=True)
+
+        # Create button frames
+        self.create_button_frames()
+
+    def create_button_frames(self):
+        """Create buttons for different letter types with dynamic scrolling"""
+        # Create a scrollable frame to contain the buttons
+        self.scroll_frame = ctk.CTkScrollableFrame(
+            master=self.main_frame,
+            orientation="horizontal",
+            bg_color="#2c2c2c",
+            fg_color="#2c2c2c",
+            height=440,  # Slightly larger to accommodate scrollbar
+            width=800   # Adjust as needed
+        )
+        self.scroll_frame.pack(fill="x", expand=True, padx=10, pady=10)
+
+        # Container frame inside the scrollable frame to hold buttons
+        self.button_container = ctk.CTkFrame(
+            master=self.scroll_frame,
+            bg_color="#2c2c2c",
+            fg_color="#2c2c2c"
+        )
+        self.button_container.pack(expand=True)
+
+        button_data = [
+            ("cl", "Cover Letter (Technical Proposal)"),
+            ("scope", "Letter of Compliance to Scope of Work"),
+            ("toc", "Letter of Compliance to Terms & Conditions"),
+            ("ack", "Letter of Acknowledgement EXHIBIT V"),
+        ]
+
+        for i, (key, text) in enumerate(button_data):
+            frame = ctk.CTkFrame(
+                master=self.button_container,
+                bg_color="#2c2c2c",
+                fg_color="#2c2c2c",
+                corner_radius=5,
+                border_width=0,
+                height=400,
+                width=300,
+            )
+            frame.pack(padx=20, pady=20, side="left")
+
+            button = ctk.CTkButton(
+                master=frame,
+                text=text,
+                hover_color="#2c2c2c",
+                fg_color="#2c2c2c",
+                height=395,
+                width=295,
+                border_width=3,
+                border_color="#666666",
+                text_color="white",
+                command=lambda k=key: self.open_new_window(k),
+            )
+            button.place(x=2, y=2)
+
+            # Bind hover events
+            button.bind("<Enter>", lambda event, b=button: self.on_enter(event, b))
+            button.bind("<Leave>", lambda event, b=button: self.on_leave(event, b))
+
+        # Bind window resize event
+        self.main_frame.bind("<Configure>", self.adjust_scroll_frame)
+
+    def adjust_scroll_frame(self, _=None):  # Replace 'event' with '_'
+        """Dynamically adjust scrollable frame to fit the window width."""
+        self.main_frame.after(100, self._adjust_scroll_frame)
+
+    def _adjust_scroll_frame(self):
+        # Calculate total width of buttons
+        total_button_width = sum(300 + 40 for _ in range(len(self.button_container.winfo_children())))
+
+        # Get current window width
+        window_width = self.main_frame.winfo_width()
+
+        # Adjust frame size to remove unnecessary scrollbars
+        if total_button_width <= window_width:
+            self.scroll_frame.configure(width=window_width, height=440)  # Adjust height as needed
+        else:
+            self.scroll_frame.configure(width=min(total_button_width, 800), height=440)
+
+
+    def on_enter(self, _, button):  # Replace 'event' with '_'
+        """Hover effect when mouse enters button"""
+        button.configure(border_color="#7fe1a3", text_color="#90f4b4")
+
+    def on_leave(self, _, button):  # Replace 'event' with '_'
+        """Hover effect when mouse leaves button"""
+        button.configure(border_color="#666666", text_color="white")
+
+    def open_new_window(self, letter_type):
+        """Open a new window for letter generation based on letter type"""
+        new_window = ctk.CTkToplevel(self.root)
+        new_window.geometry("750x600")
+        new_window.title(f"Generate {letter_type.upper()} Letter")
+        new_window.attributes("-topmost", True)
+
+        # Center the window
+        screen_width = new_window.winfo_screenwidth()
+        screen_height = new_window.winfo_screenheight()
+        window_width = 750
+        window_height = 600
+        x = (screen_width // 2) - (window_width // 2)
+        y = (screen_height // 2) - (window_height // 2)
+        new_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+        # Widgets - Common for all letter types
+        reference_no_label = ctk.CTkLabel(new_window, text="Reference No.")
+        reference_no_label.pack(padx=24, anchor="nw", pady=(30, 3))
+        reference_no_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        reference_no_entry.pack(padx=20, anchor="nw")
+
+        contract_title_label = ctk.CTkLabel(new_window, text="Contract Title")
+        contract_title_label.pack(padx=24, anchor="nw", pady=(10, 3))
+        contract_title_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        contract_title_entry.pack(padx=20, anchor="nw")
+
+        subject_label = ctk.CTkLabel(new_window, text="Subject")
+        subject_label.pack(padx=24, anchor="nw", pady=(10, 3))
+        subject_entry = ctk.CTkEntry(new_window, width=720, height=30)
+        subject_entry.pack(padx=20, anchor="nw")
+
+        contact_label = ctk.CTkLabel(new_window, text="Contact Person")
+        contact_label.pack(padx=24, anchor="nw", pady=(10, 3))
+        contact_combo = ctk.CTkComboBox(
+            new_window,
+            values=list(letterbackend.CONTACTS.keys()),
+            width=720,
+            height=30,
+        )
+        contact_combo.pack(padx=20, anchor="nw")
+
+        designation_label = ctk.CTkLabel(new_window, text="Designation")
+        designation_label.pack(padx=24, anchor="nw", pady=(10, 3))
+        designation_combo = ctk.CTkComboBox(
+            new_window,
+            values=["Project Manager", "Technical Manager", "Operation Manager", "Managing Director", "Technical Engineer"],
+            width=720,
+            height=30,
+        )
+        designation_combo.pack(padx=20, pady=(0, 30), anchor="nw")
+
+        # Specific input for Cover Letter
+        if letter_type == "cl":
+            documents_label = ctk.CTkLabel(new_window, text="Documents (comma-separated)")
+            documents_label.pack(padx=24, anchor="nw", pady=(10, 3))
+            documents_entry = ctk.CTkEntry(new_window, width=720, height=30)
+            documents_entry.pack(padx=20, anchor="nw")
+            generate_command = lambda: self.generate_pdf(new_window, letter_type, reference_no_entry.get(), contract_title_entry.get(), subject_entry.get(), contact_combo.get(), designation_combo.get(), documents_entry.get().split(','))
+        else:
+            generate_command = lambda: self.generate_pdf(new_window, letter_type, reference_no_entry.get(), contract_title_entry.get(), subject_entry.get(), contact_combo.get(), designation_combo.get(), [])
+
+        # Combined Save & Print Button
+        save_and_print_button = ctk.CTkButton(
+            master=new_window,
+            text="Generate PDF",
+            command=generate_command,
+            width=150,
+        )
+        save_and_print_button.pack(padx=20, anchor="nw", pady=25)
+        close_button = ctk.CTkButton(new_window, text="Close", command=new_window.destroy, width=150)
+        close_button.pack(padx=20, anchor="nw")
+
+    def generate_pdf(self, window, letter_type, reference_no, contract_title, subject, contact_name, designation, documents):
+        """Call the backend to generate the PDF and close the window"""
+        data = letterbackend.create_data(
+            reference_no=reference_no,
+            contract_title=contract_title,
+            subject=subject,
+            documents=[doc.strip() for doc in documents if doc.strip()],
+            contact_name=contact_name,
+            designation=designation
+        )
+
+        output_filename = ""
+        if letter_type == "cl":
+            output_filename = "cover_letter_technical_proposal.pdf"
+        elif letter_type == "scope":
+            output_filename = "letter_of_compliance_scope_of_work.pdf"
+        elif letter_type == "toc":
+            output_filename = "letter_of_compliance_terms_and_condition.pdf"
+        elif letter_type == "ack":
+            output_filename = "letter_of_acknowledgement_exhibit_v.pdf"
+
+        try:
+            letterbackend.generate_pdf(data, document_type=letter_type, output_path=output_filename)
+            ctk.messagebox.showinfo("Success", f"PDF '{output_filename}' generated successfully!")
+            window.destroy() # Close the generation window after successful generation
+        except ValueError as e:
+            ctk.messagebox.showerror("Error", str(e))
+        except Exception as e:
+            ctk.messagebox.showerror("Error", f"An error occurred: {e}")
+
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.pdf_handler = None # You might have a PDF handler class instance here later
+        self.ui = UI(self.root, self)
+
+if __name__ == "__main__":
+    root = ctk.CTk()
+    app = App(root)
+    root.mainloop()
