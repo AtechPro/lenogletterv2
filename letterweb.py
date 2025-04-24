@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
 import os
 from letterbackend import generate_pdf, create_data
-import json
+from databases.lenogdb import LetterForm, SessionLocal
+from sqlalchemy.exc import SQLAlchemyError
+import json 
 
 app = Flask(__name__)
 
-# Configuration for output folder
 app.config['OUTPUT_FOLDER'] = os.path.join(os.getcwd(), 'output')
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
@@ -26,21 +27,22 @@ PDF_NAME_MAP = {
 def letter_form(letter_type):
     """Form for generating a specific type of letter."""
     if request.method == 'POST':
-        # Collect common form data
+
         reference_no = request.form.get('reference_no')
         contract_title = request.form.get('contract_title')
         subject = request.form.get('subject')
         contact_name = request.form.get('contact_name')
         designation = request.form.get('designation')
+        
 
         # Handle document selection
         if letter_type != 'cl':
-            documents = ["Not Involved with the documents"]  # Predefined documents for non-cl letters
+            documents = ["Not Involved with the documents"] 
         else:
-            # Get all selected documents from checkboxes (will be a list)
+  
             documents = request.form.getlist('documents[]')
             
-            # If no documents were selected, provide an empty list
+
             if not documents:
                 documents = []
         
@@ -55,6 +57,40 @@ def letter_form(letter_type):
         )
         # Convert data to JSON for debugging
         print(f"Data for {letter_type}: {json.dumps(data, indent=2)}")  # Debugging log
+        
+        #fetch the created_data function
+        reference_no = data.get("REFERENCE NO")
+        contract_title = data.get("CONTRACT TITLE")
+        subject = data.get("SUBJECT")
+        contact_name = data.get("Contact title")
+        designation = data.get("designation")
+        no = data.get("no")  # Phone number
+        email = data.get("email")  # Email address
+
+        # Validate required fields
+        if not no or not email:
+            return "Phone number and email are required", 400
+        # Save to database
+        try:
+            db = SessionLocal()
+            entry = LetterForm(
+            letter_type=letter_type,
+            reference_no=reference_no,
+            contract_title=contract_title,
+            subject=subject,
+            contact_name=contact_name,
+            designation=designation,
+            no=no,
+            email=email
+            )
+            entry.set_documents(documents)
+            db.add(entry)
+            db.commit()
+        except SQLAlchemyError as e:
+            db.rollback()
+            print(f"Database error: {e}")  # Log any DB issues
+        finally:
+            db.close()
 
         # Get the corresponding filename from the mapping
         pdf_filename = PDF_NAME_MAP.get(letter_type)
