@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import os
 from letterbackend import generate_pdf, create_data
 from databases.lenogdb import LetterForm, SessionLocal
@@ -139,6 +139,11 @@ def serve_static(filename):
     # Serve the file
     return send_file(file_path)
 
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # HTTP 204: No Content
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

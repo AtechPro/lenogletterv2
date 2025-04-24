@@ -3,37 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
     <title>View PDF</title>
     <style>
+        :root {
+            --deep-teal: #167E66;
+            --muted-green: #8CB8AC;
+            --pure-white: #FFFFFF;
+            --dark-teal: #20735F;
+            --medium-teal: #2CA184;
+            --very-dark-teal: #235647;
+            --almost-white: #FEFEFE;
+            --light-mint: #FAFCFB;
+            --light-gray: #F5F5F5;
+            --light-gray-2: #f0f0f0;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column; /* Change to column layout for the back button */
+            flex-direction: column; /* Column layout for stacking elements */
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f9;
+            background-color: var(--light-mint); /* Apply light mint background */
         }
+
         .pdf-container {
             width: 90%;
             height: 85%; /* Adjust height to accommodate the back button */
-            border: 1px solid #ccc;
+            border: 1px solid var(--light-gray-2); /* Light gray border */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: var(--pure-white); /* White background for PDF viewer */
         }
+
         .back-button {
+            align-self: flex-start; /* Align button to the left */
             margin-top: 10px; /* Space between the PDF viewer and the button */
+            margin-left: 10px; /* Space from the left edge */
             padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
+            background-color: var(--deep-teal); /* Deep teal background */
+            color: var(--pure-white); /* White text */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             text-decoration: none;
         }
+
         .back-button:hover {
-            background-color: #0056b3;
+            background-color: var(--medium-teal); /* Medium teal on hover */
         }
     </style>
     <!-- Include PDFObject library -->
