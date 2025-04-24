@@ -1,13 +1,23 @@
 from fpdf import FPDF
 import os
 
+from fpdf import FPDF
+import os
+
 class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        # Set larger margins (in millimeters)
+        self.set_left_margin(20)   # Increased from 10 to 15
+        self.set_right_margin(20)  # Increased from 10 to 15
+        self.set_top_margin(20)    # You can also adjust the top margin if needed
+
     def header(self):
         # Add the company header image if it exists
         if os.path.exists('icons/Company Header.jpg'):
-            self.image('icons/Company Header.jpg', x=10, y=8, w=190)
+            self.image('icons/Company Header.jpg', x=20, y=10, w=170)  # Adjusted x and y for better placement
         # Set the height of the header
-        self.set_y(50)
+        self.set_y(50)  # Adjusted to accommodate larger top margin if necessary
 
 
 class CoverLetterSection:
@@ -22,14 +32,14 @@ class CoverLetterSection:
         pdf.set_y(40)
         
         # Title
-        pdf.set_font("Arial", size=14, style='BU')
+        pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'COVER LETTER (TECHNICAL PROPOSAL)', align='C', ln=True)
         pdf.ln(10)
         
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
-            pdf.set_font("Arial", size=12, style='B')
+            pdf.set_font("Helvetica", size=12, style='B')
             pdf.cell(width, 10, f'{label}:', border=0)
-            pdf.set_font("Arial", size=12, style='BU')
+            pdf.set_font("Helvetica", size=12, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
                 pdf.multi_cell(0, 10, text, align='L')
@@ -49,20 +59,20 @@ class CoverLetterSection:
         pdf.ln(10)
         
         # Main body text
-        pdf.set_font("Arial", size=12)
+        pdf.set_font("Helvetica", size=12)
         pdf.write(10, "Dear Sir/Madam,\n")
         pdf.write(10, "We would like to thank PETRONAS for the opportunity to quote for the above tender. We are pleased to hereby submit our Technical Proposal for the ")
         
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
         pdf.write(10, ". We hope our Technical Proposal and capabilities meet your requirement.\n")
         
         # List of documents
-        pdf.set_font("Arial", "B", 12)  # Set to Bold
+        pdf.set_font("Helvetica", "B", 12)  # Set to Bold
         pdf.write(10, "List of documents:\n")
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
         user_documents = data.get("documents", [])
         if not user_documents:
@@ -81,15 +91,15 @@ class ScopeSection:
         pdf.set_y(40)
         
         # Title
-        pdf.set_font("Arial", size=14, style='BU')
+        pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF COMPLIANCE TO SCOPE OF WORKS', align='C', ln=True)
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
-            pdf.set_font("Arial", size=12, style='B')
+            pdf.set_font("Helvetica", size=12, style='B')
             pdf.cell(width, 10, f'{label}:', border=0)
-            pdf.set_font("Arial", size=12, style='BU')
+            pdf.set_font("Helvetica", size=12, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
                 pdf.multi_cell(0, 10, text, align='L')
@@ -109,23 +119,26 @@ class ScopeSection:
         pdf.ln(10)
         
         # Main body text
-        pdf.set_font("Arial", size=12)
+        pdf.set_font("Helvetica", size=12)
         pdf.write(10, "Dear Sir/Madam,\n")
         pdf.write(10, "We are writing in response to the ")
         
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
         pdf.write(10, " for ")
 
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
-
-        pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ATTACHMENT A - SCOPE OF WORKS.\n")
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
+        pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ")
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.write(10, "ATTACHMENT A - SCOPE OF WORKS.\n")
+        pdf.set_font("Helvetica", "", 12)
+        pdf.ln(3)
         pdf.write(10, "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Scope of Work, and we are fully committed to meet and comply with all the stipulated requirements, scopes, terms and conditions.\n")
-        pdf.ln(2)
+        pdf.ln(3)
 
 class ToCSection:
     @staticmethod
@@ -134,15 +147,15 @@ class ToCSection:
         pdf.set_y(40)
         
         # Title
-        pdf.set_font("Arial", size=14, style='BU')
+        pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF COMPLIANCE TO TERMS & CONDITIONS', align='C', ln=True)
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
-            pdf.set_font("Arial", size=12, style='B')
+            pdf.set_font("Helvetica", size=12, style='B')
             pdf.cell(width, 10, f'{label}:', border=0)
-            pdf.set_font("Arial", size=12, style='BU')
+            pdf.set_font("Helvetica", size=12, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
                 pdf.multi_cell(0, 10, text, align='L')
@@ -162,19 +175,19 @@ class ToCSection:
         pdf.ln(10)
         
         # Main body text
-        pdf.set_font("Arial", size=12)
+        pdf.set_font("Helvetica", size=12)
         pdf.write(10, "Dear Sir/Madam,\n")
         pdf.write(10, "We are writing in response to the ")
         
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
         pdf.write(10, " for ")
 
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
         pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the Terms & Conditions.\n")
         pdf.write(10, "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Terms & Conditions, and we are fully committed to meet and comply with all the stipulated requirements, terms and conditions.\n")
@@ -187,15 +200,15 @@ class AckSection:
         pdf.set_y(40)
         
         # Title
-        pdf.set_font("Arial", size=14, style='BU')
+        pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF ACKNOWLEDGEMENT TO EXHIBIT V', align='C', ln=True)
         pdf.ln(10)
         
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
-            pdf.set_font("Arial", size=12, style='B')
+            pdf.set_font("Helvetica", size=12, style='B')
             pdf.cell(width, 10, f'{label}:', border=0)
-            pdf.set_font("Arial", size=12, style='BU')
+            pdf.set_font("Helvetica", size=12, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
                 pdf.multi_cell(0, 10, text, align='L')
@@ -215,18 +228,18 @@ class AckSection:
         pdf.ln(10)
         
         # Main body text
-        pdf.set_font("Arial", size=12)
+        pdf.set_font("Helvetica", size=12)
         pdf.write(10, "Dear Sir/Madam,\n")
         pdf.write(10, "We are writing this letter to acknowledge that we have read and understood the ")
-        pdf.set_font("Arial", style="B", size=12)
+        pdf.set_font("Helvetica", style="B", size=12)
         pdf.write(10, "EXHIBIT V - HEALTH, SAFETY AND ENVIRONMENT REQUIREMENTS")
         pdf.write(10, " for ")
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
         pdf.write(10, " ")
-        pdf.set_font("Arial", style="BU", size=12)
+        pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
-        pdf.set_font("Arial", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
         pdf.ln(10)
 
 
@@ -258,7 +271,7 @@ class CompClarificationSection:
 class SignatureSection:
     @staticmethod
     def add(pdf, data):
-        """Add the signature section to the PDF, ensuring it doesn't break the layout."""
+        """Add the signature section to the PDF, ensuring it adheres to the PDF margins."""
         # Calculate the space required for the signature section
         REQUIRED_HEIGHT = 10 + 20 + 5 + 6 + 6 + 6 + 5  # Approximate height based on font sizes and spacing
 
@@ -271,9 +284,14 @@ class SignatureSection:
             pdf.add_page()  # Add a new page
             current_y = pdf.get_y()  # Update the current vertical position
 
+        # Set the font for the thank you message
+        pdf.set_font("Helvetica", "", 12)
+        
+        # Calculate the available width based on margins
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+
         # Thank you message
-        pdf.set_font("Arial", "", 12)
-        pdf.cell(0, 10, "Thank you and best regards,", align='L', ln=True)
+        pdf.cell(available_width, 10, "Thank you and best regards,", align='L', ln=True)
 
         # Signature image
         contact_image = data.get('contact_image_path', '')
@@ -281,7 +299,8 @@ class SignatureSection:
             SIGNATURE_WIDTH = 60
             SIGNATURE_HEIGHT = 20
 
-            signature_x = 10
+            # Calculate the x position to align with the left margin
+            signature_x = pdf.l_margin
             signature_y = pdf.get_y()
 
             pdf.image(
@@ -294,22 +313,25 @@ class SignatureSection:
 
             pdf.ln(SIGNATURE_HEIGHT + 5)
         else:
-            pdf.cell(0, 10, "[Signature Not Available]", ln=True)
+            # If no signature image is available, align the text with the left margin
+            pdf.cell(available_width, 10, "[Signature Not Available]", align='L', ln=True)
             pdf.ln(20)
 
         # Underline
         pdf.set_draw_color(0, 0, 0)  # Set color to black
         pdf.set_line_width(0.5)  # Set line width
-        pdf.line(10, pdf.get_y(), 70, pdf.get_y())  # Draw a line with predefined width of 60
+        underline_x_start = pdf.l_margin
+        underline_x_end = pdf.w - pdf.r_margin
+        pdf.line(underline_x_start, pdf.get_y(), 70, pdf.get_y())  # Draw a line across the available width
 
         # Name and designation
-        pdf.set_font("Arial", "B", 12)  
+        pdf.set_font("Helvetica", "B", 12)  
         pdf.cell(0, 6, data.get('Contact title', ''), ln=True)
         
-        pdf.set_font("Arial", "B", 12)
+        pdf.set_font("Helvetica", "B", 12)
         pdf.cell(0, 6, data.get("designation", ""), ln=True)
         
-        pdf.set_font("Arial", "B", 12)
+        pdf.set_font("Helvetica", "B", 12)
         pdf.cell(0, 6, "LENOG SDN BHD", ln=True)
 
 
@@ -454,9 +476,9 @@ def create_data(reference_no, contract_title, subject, documents, contact_name, 
 """
 
 data = create_data(
-    reference_no="REF-2025-001",
-    contract_title="Flange Joint Management",
-    subject="Proposal for Flange Joint Integrity Work",
+    reference_no="REF-2025-001", 
+    contract_title="Flange Joint Management ",
+    subject="Proposal for Flange Joint Integrity Work ",
     documents=[
         "Cover Letter",
         "Scope of Work",
@@ -468,8 +490,8 @@ data = create_data(
 )
 
 
-
 """
+
 
 # Generate the PDF with the specified sections
 #generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")

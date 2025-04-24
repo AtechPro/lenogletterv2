@@ -1,6 +1,8 @@
 import customtkinter as ctk
 import os
 import letterbackend  # Assuming your backend is in letterbackend.py
+import tkinter as tk
+from tkinter import filedialog, messagebox as mb
 
 class UI: #UI Class
     def __init__(self, root, app):
@@ -254,7 +256,8 @@ class UI: #UI Class
 
 
     def generate_pdf(self, window, letter_type, reference_no, contract_title, subject, contact_name, designation, documents):
-        """Call the backend to generate the PDF and close the window"""
+        """Prompt the user to choose a save location, generate the PDF, and close the window"""
+        # Create the data dictionary for the PDF
         data = letterbackend.create_data(
             reference_no=reference_no,
             contract_title=contract_title,
@@ -264,28 +267,44 @@ class UI: #UI Class
             designation=designation
         )
 
-        output_filename = ""
+        # Define the default filename based on the letter type
         if letter_type == "cl":
-            output_filename = "cover_letter_technical_proposal.pdf"
+            default_filename = "1. Cover Letter - Technical Proposal.pdf"
         elif letter_type == "scope":
-            output_filename = "letter_of_compliance_scope_of_work.pdf"
+            default_filename = "2 . Letter of Compliance - Attachment A - Scope of Work.pdf"
         elif letter_type == "toc":
-            output_filename = "letter_of_compliance_terms_and_condition.pdf"
+            default_filename = "3. Letter of Compliance - Terms and Conditions.pdf"
         elif letter_type == "ack":
-            output_filename = "letter_of_acknowledgement_exhibit_v.pdf"
+            default_filename = "4. Letter of Acknowledgement - EXHIBIT V.pdf"
+        else:
+            default_filename = "output.pdf"  # Fallback default filename
+
+        # Prompt the user to choose the save location and filename
+        save_path = filedialog.asksaveasfilename(
+            title="Save PDF",
+            initialfile=default_filename,
+            defaultextension=".pdf",
+            filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")]
+        )
+
+        # Check if the user cancelled the save dialog
+        if not save_path:
+            mb.showinfo("Cancelled", "PDF generation cancelled by the user.")
+            return
 
         try:
-            letterbackend.generate_pdf(data, document_type=letter_type, output_path=output_filename)
-            ctk.messagebox.showinfo("Success", f"PDF '{output_filename}' generated successfully!")
+            # Generate the PDF with the specified save path
+            letterbackend.generate_pdf(data, document_type=letter_type, output_path=save_path)
+            mb.showinfo("Success", f"PDF '{save_path}' generated successfully!")
             window.destroy()  # Close the generation window after successful generation
         except ValueError as e:
-            ctk.messagebox.showerror("Error", str(e))
+            mb.showerror("Error", str(e))
         except Exception as e:
-            ctk.messagebox.showerror("Error", f"An error occurred: {e}")
+            mb.showerror("Error", f"An error occurred: {e}")
 class App:
     def __init__(self, root):
         self.root = root
-        self.pdf_handler = None # You might have a PDF handler class instance here later
+        self.pdf_handler = None 
         self.ui = UI(self.root, self)
 
 if __name__ == "__main__":
