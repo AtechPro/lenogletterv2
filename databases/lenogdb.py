@@ -41,8 +41,8 @@ LOCAL_DB_PATH = os.path.join(DB_FOLDER, 'letterdata.db')
 Z_DRIVE_DB_PATH = r'Z:\Technical\02 Research & Development\Letter GUI\letterdata.db'
 
 # Switch here (use LOCAL for now)
-# db_path = LOCAL_DB_PATH
-db_path = Z_DRIVE_DB_PATH
+db_path = LOCAL_DB_PATH
+# db_path = Z_DRIVE_DB_PATH
 
 engine = create_engine(f'sqlite:///{db_path}')
 Base.metadata.create_all(engine)

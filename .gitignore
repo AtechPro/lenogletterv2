@@ -1,0 +1,15 @@
+# Ignore all .db files in the /databases directory
+/databases/*.db
+
+# Ignore all .pdf files in the /output directory
+/output/*.pdf
+
+__pycache__
+venv
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.csv
