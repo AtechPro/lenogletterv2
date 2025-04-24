@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
 import os
 from letterbackend import generate_pdf, create_data
+import json
 
 app = Flask(__name__)
 
@@ -34,7 +35,7 @@ def letter_form(letter_type):
 
         # Handle document selection
         if letter_type != 'cl':
-            documents = ["test"]  # Predefined documents for non-cl letters
+            documents = ["Not Involved with the documents"]  # Predefined documents for non-cl letters
         else:
             # Get all selected documents from checkboxes (will be a list)
             documents = request.form.getlist('documents[]')
@@ -52,6 +53,8 @@ def letter_form(letter_type):
             contact_name=contact_name,
             designation=designation
         )
+        # Convert data to JSON for debugging
+        print(f"Data for {letter_type}: {json.dumps(data, indent=2)}")  # Debugging log
 
         # Get the corresponding filename from the mapping
         pdf_filename = PDF_NAME_MAP.get(letter_type)
@@ -99,6 +102,8 @@ def serve_static(filename):
     
     # Serve the file
     return send_file(file_path)
+
+
 
 @app.route('/favicon.ico')
 def favicon():
