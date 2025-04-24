@@ -473,9 +473,9 @@ def create_data(reference_no, contract_title, subject, documents, contact_name, 
 """
 
 data = create_data(
-    reference_no="REF-2025-001fasdfsafasfas",
-    contract_title="Flange Joint Management fadsfasdfasdfasdf",
-    subject="Proposal for Flange Joint Integrity Work fsdafasfasdfsdafdsafdsa",
+    reference_no="REF-2025-001", 
+    contract_title="Flange Joint Management ",
+    subject="Proposal for Flange Joint Integrity Work ",
     documents=[
         "Cover Letter",
         "Scope of Work",
