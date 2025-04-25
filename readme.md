@@ -2,7 +2,7 @@
 
 Gah damn betul, after full consideration, meeting with Cheok, I consider to rebuild entire thing from scratch, betul ngl
 
-Well what new, can be hosted anywere, _someone sponser me for web hosting, asal ada cara la mau hosting 😁_, technically its can be run anywhere in the local network
+Well what new, can be hosted anywere, _someone sponser me for web hosting, asal ada cara la mau hosting_ 😁, technically its can be run anywhere in the local network
 
 Btw, still mau **Excel**, well its have the feature for export from web, smart kan gah damn dllm
 
@@ -15,22 +15,22 @@ PDFviewing is also limited but if lets say that you still interested on tkinter 
 <details>
   <summary>Boleh try test sini</summary>
 
+   wkwkwkw rubuh punya tkinker, Customtkinker pun cannot help me
 
   ![Make fun of Tkinker and CustomTkinker](assets/laughing-cat.gif)
-  
-  wkwkwkw rubuh punya tkinker, Customtkinker pun cannot help me
-  
+
+  i love Flask gah damn jatuh cinta sama dya
+
+  ![I LOVE FLASK SUKI SUKI DAISUKI](assets/flask-python.gif)
 
 </details>
 
-i love Flask gah damn jatuh cinta sama dya
 
-![I LOVE FLASK SUKI SUKI DAISUKI](assets/flask-python.gif)
 ## Contribution
 
 Sebagai seorang-seorangnya Sopware engine near, semua AI sya hantam, but i can't post here i want to become gatekeeper. Gonna become いちばんベバン <details><summary>(if you want translation lmao)</summary>Ichiban Beban, techincally nombor 1 beban</details>
 
-![AAAAAA](assets/tanaka-anime.gif)
+![AAAAAA](assets/shikanokonoko.gif)
 
 ## Continous Intergration / Continous Deployment Featrue
 
