@@ -13,9 +13,11 @@ I found out building using web is more convinient then using tkinter, malas sya 
 PDFviewing is also limited but if lets say that you still interested on tkinter version, consider to look the [Tkinker version](https://github.com/AtechPro/lenogletterv2/tree/Tkinkerver)
 
 <details>
-  <summary>Noob Tkinker, L bozo wkwkwkwk</summary>
+  <summary>Boleh try test sini</summary>
 
+wkwkwk noob tkinker, eee library buruk 
   ![Make fun of Tkinker and CustomTkinker](assets/laughing-cat.gif)
+
 </details>
 
 i love Flask gah damn jatuh cinta sama dya
