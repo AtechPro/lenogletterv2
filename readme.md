@@ -15,8 +15,10 @@ PDFviewing is also limited but if lets say that you still interested on tkinter 
 <details>
   <summary>Boleh try test sini</summary>
 
-wkwkwk noob tkinker, eee library buruk 
+
   ![Make fun of Tkinker and CustomTkinker](assets/laughing-cat.gif)
+  wkwkwkw rubuh punya tkinker, Customtkinker pun cannot help me
+  
 
 </details>
 
