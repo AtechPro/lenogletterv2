@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Letters</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
 </head>
 <style>
     /* CSS Variables */
@@ -186,16 +187,16 @@
         <!-- Filter Buttons -->
         <div class="button-container filter-buttons">
             <a href="{{ url_for('view_letters') }}" class="button">All</a>
-            {% for lt in ['cl', 'ack', 'scope', 'toc'] %}
-                <a href="{{ url_for('view_letters', letter_type=lt) }}" class="button">{{ lt }}</a>
+            {% for lt, name in [('cl', 'Cover Letter'), ('ack', 'Acknowledgement'), ('scope', 'Scope for Work'), ('toc', 'Terms and Condition')] %}
+                <a href="{{ url_for('view_letters', letter_type=lt) }}" class="button">{{ name }}</a>
             {% endfor %}
         </div>
 
         <!-- Export Buttons -->
         <div class="button-container export-buttons">
             <a href="{{ url_for('export_to_excel', letter_type='all') }}" class="button">Export All</a>
-            {% for lt in ['cl', 'ack', 'scope', 'toc'] %}
-                <a href="{{ url_for('export_to_excel', letter_type=lt) }}" class="button">Export {{ lt }}</a>
+            {% for lt, name in [('cl', 'Cover Letter'), ('ack', 'Acknowledgement'), ('scope', 'Scope for Work'), ('toc', 'Terms and Condition')] %}
+                <a href="{{ url_for('export_to_excel', letter_type=lt) }}" class="button">Export {{ name }}</a>
             {% endfor %}
         </div>
     </div>

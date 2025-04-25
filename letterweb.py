@@ -95,8 +95,8 @@ def index():
 
 PDF_NAME_MAP = {
     'cl': '1. Cover Letter - Technical Proposal.pdf',
-    'ack': '4. Letter of Acknowledgement - EXHIBIT V.pdf',
     'scope': '2. Letter of Compliance - Attachment A - Scope of Work.pdf',
+    'ack': '4. Letter of Acknowledgement - EXHIBIT V.pdf',
     'toc': '3. Letter of Compliance - Terms and Conditions.pdf',
 }
 
