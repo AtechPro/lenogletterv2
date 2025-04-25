@@ -1,9 +1,6 @@
 from fpdf import FPDF
 import os
 
-from fpdf import FPDF
-import os
-
 class PDF(FPDF):
     def __init__(self):
         super().__init__()
