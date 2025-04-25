@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import json
+import bcrypt
 
 Base = declarative_base()
 
@@ -25,6 +26,24 @@ class LetterForm(Base):
 
     def get_documents(self):
         return json.loads(self.documents or "[]")
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+
+    def set_password(self, password):
+        """Hashes and stores the password."""
+      
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verifies the password against the stored hash."""
+        
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
 
 
 # === PATH CONFIGURATION ===

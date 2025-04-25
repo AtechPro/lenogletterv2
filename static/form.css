@@ -166,6 +166,23 @@ input[type="text"]:focus, select:focus {
     background-color: var(--medium-teal);
 }
 
+/* Password input styling */
+input[type="password"] {
+    padding: 0.75rem;
+    border: 1px solid var(--muted-green);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--deep-teal);
+    background-color: var(--light-gray);
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+input[type="password"]:focus {
+    border-color: var(--medium-teal);
+    outline: none;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .container {

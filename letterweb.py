@@ -1,18 +1,101 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_file, send_from_directory, session, jsonify, flash
 import os
 from letterbackend import generate_pdf, create_data
-from databases.lenogdb import LetterForm, SessionLocal
+from databases.lenogdb import LetterForm, SessionLocal, User
 from sqlalchemy.exc import SQLAlchemyError
 import json 
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = 'JawaJawaJawaGahDamnDiuLeiLouMou'  # Change this to a secure key in production
 
 app.config['OUTPUT_FOLDER'] = os.path.join(os.getcwd(), 'output')
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
+
+def create_admin_user():
+    db = SessionLocal()
+    try:
+        # Check if the admin user already exists
+        admin_user = db.query(User).filter_by(username="admin").first()
+        if not admin_user:
+            # Create the admin user
+            admin_user = User(username="lenogadmin")
+            admin_user.set_password("lenog12345")  # Replace "password" with your desired password
+            db.add(admin_user)
+            db.commit()
+            print("Admin user created successfully.")
+        else:
+            print("Admin user already exists.")
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating admin user: {e}")
+    finally:
+        db.close()
+
+# Call this function to create the admin user
+create_admin_user()
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Check if the request is JSON (AJAX)
+        if request.is_json:
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+
+            db = SessionLocal()
+            user = db.query(User).filter_by(username=username).first()
+
+            if user and user.verify_password(password):
+                session['logged_in'] = True
+                return jsonify({"success": True, "message": "Login successful!"})
+            else:
+                return jsonify({"success": False, "message": "Invalid username or password"})
+        else:
+            # Handle traditional form submission as a fallback
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            db = SessionLocal()
+            user = db.query(User).filter_by(username=username).first()
+
+            if user and user.verify_password(password):
+                session['logged_in'] = True
+                flash("Login successful!", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("Invalid username or password", "danger")
+                return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            # Flash a message to inform the user
+            flash("You need to log in first.", "warning")
+            # Redirect to the login page
+            return redirect(url_for('login'))
+        # If the user is logged in, proceed to the requested route
+        return f(*args, **kwargs)
+    return decorated_function
+
+    
+@app.route('/logout')
+def logout():
+        # Clear the session to log the user out
+        session.clear()
+        # Flash a message to inform the user
+        flash("You have been logged out.", "info")
+        # Redirect to the login page
+        return redirect(url_for('login'))   
+
 @app.route('/')
+@login_required
 def index():
-    """Landing page with links to different letter forms."""
     return render_template('main.html')
 
 PDF_NAME_MAP = {
@@ -24,6 +107,7 @@ PDF_NAME_MAP = {
 
 
 @app.route('/<letter_type>', methods=['GET', 'POST'])
+@login_required
 def letter_form(letter_type):
     """Form for generating a specific type of letter."""
     if request.method == 'POST':
@@ -107,7 +191,8 @@ def letter_form(letter_type):
     # Render the appropriate form based on letter type
     return render_template(f'{letter_type}')
 
-@app.route('/view/<letter_type>')
+@app.route('/view/<letter_type>') #pdf rendering 
+@login_required
 def view_pdf(letter_type):
     """Render the generated PDF in the browser."""
     # Get the corresponding filename from the mapping
@@ -125,7 +210,8 @@ def view_pdf(letter_type):
     # Pass only the filename to the template
     return render_template('view_pdf.html', pdf_filename=pdf_filename)
 
-@app.route('/output/<path:filename>')
+@app.route('/output/<path:filename>') #pdf output file serving (for download)
+@login_required
 def serve_static(filename):
     # Sanitize the filename to prevent directory traversal attacks
     safe_filename = os.path.basename(filename)

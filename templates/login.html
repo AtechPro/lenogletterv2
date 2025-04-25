@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/form.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <div id="message" class="text-center"></div>
+        <form id="login-form" class="form">
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">Login</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#login-form').on('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect form data
+                const username = $('#username').val();
+                const password = $('#password').val();
+
+                // Send an AJAX POST request
+                $.ajax({
+                    url: '/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username: username, password: password }),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#message').html(`<p style="color: green;">${response.message}</p>`);
+                            // Redirect to the main page after a short delay
+                            setTimeout(() => {
+                                window.location.href = "{{ url_for('index') }}";
+                            }, 1000);
+                        } else {
+                            $('#message').html(`<p style="color: red;">${response.message}</p>`);
+                        }
+                    },
+                    error: function () {
+                        $('#message').html('<p style="color: red;">An error occurred. Please try again.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
