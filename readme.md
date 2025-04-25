@@ -32,7 +32,7 @@ Sebagai seorang-seorangnya Sopware engine near, semua AI sya hantam, but i can't
 
 ![AAAAAA](assets/shikanokonoko.gif)
 
-## Continous Intergration / Continous Deployment Featrue
+## Continous Intergration / Continous Deployment Feature
 
 Tbh i consider docker tapi mcm melebih2 pula jadi sya letak ja di sini the dockerfile if you really want to make an image for this system, well at least kan its can run to any computers
 
