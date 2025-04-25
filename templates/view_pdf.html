@@ -62,7 +62,7 @@
 <body>
     <!-- PDF Viewer Container -->
     <div class="pdf-container" id="pdf-viewer"></div>
-    <a href="/" class="back-button">Back to Main</a>
+    <a href="/" class="back-button" style="align-self: center; margin-top: 20px;">Back to Main</a>
     <script>
         const pdfPath = "{{ url_for('serve_static', filename=pdf_filename) }}";
         console.log("PDF Path:", pdfPath);  // Debugging log

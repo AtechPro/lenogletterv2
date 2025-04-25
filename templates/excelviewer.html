@@ -186,18 +186,12 @@
     <div class="button-container-wrapper">
         <!-- Filter Buttons -->
         <div class="button-container filter-buttons">
-            <a href="{{ url_for('view_letters') }}" class="button">All</a>
-            {% for lt, name in [('cl', 'Cover Letter'), ('ack', 'Acknowledgement'), ('scope', 'Scope for Work'), ('toc', 'Terms and Condition')] %}
-                <a href="{{ url_for('view_letters', letter_type=lt) }}" class="button">{{ name }}</a>
-            {% endfor %}
+            <!-- Buttons will be dynamically populated by JavaScript -->
         </div>
 
         <!-- Export Buttons -->
         <div class="button-container export-buttons">
-            <a href="{{ url_for('export_to_excel', letter_type='all') }}" class="button">Export All</a>
-            {% for lt, name in [('cl', 'Cover Letter'), ('ack', 'Acknowledgement'), ('scope', 'Scope for Work'), ('toc', 'Terms and Condition')] %}
-                <a href="{{ url_for('export_to_excel', letter_type=lt) }}" class="button">Export {{ name }}</a>
-            {% endfor %}
+            <!-- Buttons will be dynamically populated by JavaScript -->
         </div>
     </div>
 
@@ -205,7 +199,7 @@
     <table class="letters-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>No</th>
                 <th>Letter Type</th>
                 <th>Reference No</th>
                 <th>Contract Title</th>
@@ -217,22 +211,96 @@
             </tr>
         </thead>
         <tbody>
-            {% for letter in letters %}
-            <tr>
-                <td>{{ letter.id }}</td>
-                <td>{{ letter.letter_type }}</td>
-                <td>{{ letter.reference_no }}</td>
-                <td>{{ letter.contract_title }}</td>
-                <td>{{ letter.subject }}</td>
-                <td>{{ letter.contact_name }}</td>
-                <td>{{ letter.designation }}</td>
-                <td>{{ letter.phone_no }}</td>
-                <td>{{ letter.email }}</td>
-            </tr>
-            {% endfor %}
+            <!-- Table rows will be dynamically populated by JavaScript -->
         </tbody>
     </table>
 
     <a href="/" class="back-button">Back to Main</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Button data for filters and exports
+            const buttonData = [
+                { type: 'all', name: 'All' },
+                { type: 'cl', name: 'Cover Letter' },
+                { type: 'ack', name: 'Acknowledgement' },
+                { type: 'scope', name: 'Scope for Work' },
+                { type: 'toc', name: 'Terms and Condition' }
+            ];
+        
+            // Containers for filter and export buttons
+            const filterContainer = document.querySelector('.filter-buttons');
+            const exportContainer = document.querySelector('.export-buttons');
+        
+            // Generate filter buttons
+            buttonData.forEach(button => {
+                const filterButton = document.createElement('a');
+                filterButton.href = '#';
+                filterButton.className = 'button';
+                filterButton.textContent = button.name;
+                filterButton.dataset.type = button.type;
+                filterContainer.appendChild(filterButton);
+            });
+        
+            // Generate export buttons
+            buttonData.forEach(button => {
+                const exportButton = document.createElement('a');
+                exportButton.href = `/export/${button.type}`;
+                exportButton.className = 'button';
+                exportButton.textContent = button.type === 'all' ? 'Export All' : `Export ${button.name}`;
+                exportContainer.appendChild(exportButton);
+            });
+        
+            const tableBody = document.querySelector('.letters-table tbody');
+        
+            // Function to fetch and populate table data
+            function fetchAndPopulateTable(letterType = 'all') {
+                const url = letterType === 'all' ? '/api/letters' : `/api/letters?letter_type=${letterType}`;
+        
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear existing table rows
+                        tableBody.innerHTML = '';
+        
+                        // Initialize a counter for auto-incrementing numbers
+                        let counter = 1;
+        
+                        // Populate the table with data
+                        data.forEach(letter => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${counter}</td> <!-- Auto-incremented number -->
+                                <td>${letter.letter_type}</td>
+                                <td>${letter.reference_no}</td>
+                                <td>${letter.contract_title}</td>
+                                <td>${letter.subject}</td>
+                                <td>${letter.contact_name}</td>
+                                <td>${letter.designation}</td>
+                                <td>${letter.phone_no}</td>
+                                <td>${letter.email}</td>
+                            `;
+                            tableBody.appendChild(row);
+        
+                            // Increment the counter
+                            counter++;
+                        });
+                    })
+                    .catch(error => console.error('Error fetching letters:', error));
+            }
+        
+            // Add event listeners to filter buttons
+            filterContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('button')) {
+                    event.preventDefault();
+                    const letterType = event.target.dataset.type;
+                    fetchAndPopulateTable(letterType);
+                }
+            });
+        
+            // Initial fetch for all letters
+            fetchAndPopulateTable();
+        });
+    </script>
 </body>
 </html>

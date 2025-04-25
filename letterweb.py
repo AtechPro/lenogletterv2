@@ -232,6 +232,44 @@ def view_letters():
     # Render the template with JSON data
     return render_template('excelviewer.html', letters=letters_json, letter_type=letter_type)
 
+@app.route('/api/letters', methods=['GET'])
+@login_required
+def api_view_letters():
+    # Get filter from query string
+    letter_type = request.args.get('letter_type', None)
+
+    db = SessionLocal()
+    try:
+        # Query the database
+        query = db.query(LetterForm)
+        if letter_type:
+            query = query.filter_by(letter_type=letter_type)
+        letters = query.all()
+
+        # Convert letters to JSON format
+        letters_json = [
+            {
+                "id": letter.id,
+                "letter_type": letter.letter_type,
+                "reference_no": letter.reference_no,
+                "contract_title": letter.contract_title,
+                "subject": letter.subject,
+                "contact_name": letter.contact_name,
+                "designation": letter.designation,
+                "phone_no": letter.no,
+                "email": letter.email,
+            }
+            for letter in letters
+        ]
+
+    except SQLAlchemyError as e:
+        print(f"Database error: {e}")
+        letters_json = []
+    finally:
+        db.close()
+
+    return jsonify(letters_json)
+
 @app.route('/export/<letter_type>', methods=['GET'])
 @login_required
 def export_to_excel(letter_type):
@@ -246,7 +284,6 @@ def export_to_excel(letter_type):
         # Convert data to a DataFrame
         data = [
             {
-                "ID": letter.id,
                 "Letter Type": letter.letter_type,
                 "Reference No": letter.reference_no,
                 "Contract Title": letter.contract_title,
