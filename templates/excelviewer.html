@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letters</title>
+</head>
+<style>
+    /* CSS Variables */
+    :root {
+        --deep-teal: #167E66;
+        --muted-green: #8CB8AC;
+        --pure-white: #FFFFFF;
+        --dark-teal: #20735F;
+        --medium-teal: #2CA184;
+        --light-mint: #FAFCFB;
+        --light-gray: #F5F5F5;
+        --light-gray-2: #f0f0f0;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --hover-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Reset Default Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Body Styling */
+    body {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        background-color: var(--light-mint);
+        color: var(--deep-teal);
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    /* Header Styling */
+    h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--dark-teal);
+        font-weight: 700;
+    }
+
+    /* Center the heading using a wrapper div */
+    .heading-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    /* Adjust layout for filter and export buttons */
+    .button-container-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .export-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    /* Ensure buttons are styled consistently */
+    .button {
+        padding: 0.75rem 1.5rem;
+        background-color: var(--medium-teal);
+        color: var(--pure-white);
+        text-decoration: none;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .button:hover,
+    .button:focus {
+        background-color: var(--dark-teal);
+        transform: translateY(-2px);
+        box-shadow: var(--hover-shadow);
+        outline: none;
+    }
+
+    /* Table Styling */
+    .letters-table {
+        width: 100%;
+        table-layout: auto; /* Dynamic column sizing */
+        border-collapse: collapse;
+        background-color: var(--pure-white);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+    }
+
+    .letters-table th,
+    .letters-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--muted-green);
+        word-wrap: break-word; /* Prevent text overflow */
+        white-space: nowrap; /* Prevent text wrapping */
+    }
+
+    .letters-table th {
+        background-color: var(--medium-teal);
+        color: var(--pure-white);
+        font-weight: bold;
+    }
+
+    .letters-table td {
+        white-space: normal; /* Allow wrapping for long text */
+    }
+
+    /* Responsive Design Adjustments */
+    @media (max-width: 768px) {
+        .button-container-wrapper {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .filter-buttons,
+        .export-buttons {
+            justify-content: center;
+        }
+
+        .button {
+            width: 80%;
+        }
+
+        .letters-table th,
+        .letters-table td {
+            padding: 0.75rem;
+        }
+    }
+
+    /* Style for the back button */
+    .back-button {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--medium-teal);
+        color: var(--pure-white);
+        text-decoration: none;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .back-button:hover,
+    .back-button:focus {
+        background-color: var(--dark-teal);
+        transform: translateY(-2px);
+        box-shadow: var(--hover-shadow);
+        outline: none;
+    }
+</style>
+
+<body>
+    <div class="heading-wrapper">
+        <h1>Letters</h1>
+    </div>
+
+    <div class="button-container-wrapper">
+        <!-- Filter Buttons -->
+        <div class="button-container filter-buttons">
+            <a href="{{ url_for('view_letters') }}" class="button">All</a>
+            {% for lt in ['cl', 'ack', 'scope', 'toc'] %}
+                <a href="{{ url_for('view_letters', letter_type=lt) }}" class="button">{{ lt }}</a>
+            {% endfor %}
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="button-container export-buttons">
+            <a href="{{ url_for('export_to_excel', letter_type='all') }}" class="button">Export All</a>
+            {% for lt in ['cl', 'ack', 'scope', 'toc'] %}
+                <a href="{{ url_for('export_to_excel', letter_type=lt) }}" class="button">Export {{ lt }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Letters Table -->
+    <table class="letters-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Letter Type</th>
+                <th>Reference No</th>
+                <th>Contract Title</th>
+                <th>Subject</th>
+                <th>Contact Name</th>
+                <th>Designation</th>
+                <th>Phone No</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for letter in letters %}
+            <tr>
+                <td>{{ letter.id }}</td>
+                <td>{{ letter.letter_type }}</td>
+                <td>{{ letter.reference_no }}</td>
+                <td>{{ letter.contract_title }}</td>
+                <td>{{ letter.subject }}</td>
+                <td>{{ letter.contact_name }}</td>
+                <td>{{ letter.designation }}</td>
+                <td>{{ letter.phone_no }}</td>
+                <td>{{ letter.email }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/" class="back-button">Back to Main</a>
+</body>
+</html>

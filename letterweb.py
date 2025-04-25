@@ -5,6 +5,8 @@ from databases.lenogdb import LetterForm, SessionLocal, User
 from sqlalchemy.exc import SQLAlchemyError
 import json 
 from functools import wraps
+import pandas as pd
+from io import BytesIO
 
 app = Flask(__name__)
 app.secret_key = 'JawaJawaJawaGahDamnDiuLeiLouMou'  # Change this to a secure key in production
@@ -21,7 +23,7 @@ def create_admin_user():
         if not admin_user:
             # Create the admin user
             admin_user = User(username="lenogadmin")
-            admin_user.set_password("lenog12345")  # Replace "password" with your desired password
+            admin_user.set_password("lenog12345")  
             db.add(admin_user)
             db.commit()
             print("Admin user created successfully.")
@@ -33,13 +35,13 @@ def create_admin_user():
     finally:
         db.close()
 
-# Call this function to create the admin user
+
 create_admin_user()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Check if the request is JSON (AJAX)
+
         if request.is_json:
             data = request.get_json()
             username = data.get('username')
@@ -54,7 +56,6 @@ def login():
             else:
                 return jsonify({"success": False, "message": "Invalid username or password"})
         else:
-            # Handle traditional form submission as a fallback
             username = request.form.get('username')
             password = request.form.get('password')
 
@@ -75,22 +76,16 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('logged_in'):
-            # Flash a message to inform the user
             flash("You need to log in first.", "warning")
-            # Redirect to the login page
             return redirect(url_for('login'))
-        # If the user is logged in, proceed to the requested route
         return f(*args, **kwargs)
     return decorated_function
 
     
 @app.route('/logout')
 def logout():
-        # Clear the session to log the user out
         session.clear()
-        # Flash a message to inform the user
         flash("You have been logged out.", "info")
-        # Redirect to the login page
         return redirect(url_for('login'))   
 
 @app.route('/')
@@ -123,14 +118,10 @@ def letter_form(letter_type):
         if letter_type != 'cl':
             documents = ["Not Involved with the documents"] 
         else:
-  
             documents = request.form.getlist('documents[]')
-            
-
             if not documents:
                 documents = []
         
-        # Create data dictionary
         data = create_data(
             reference_no=reference_no,
             contract_title=contract_title,
@@ -139,8 +130,7 @@ def letter_form(letter_type):
             contact_name=contact_name,
             designation=designation
         )
-        # Convert data to JSON for debugging
-        print(f"Data for {letter_type}: {json.dumps(data, indent=2)}")  # Debugging log
+        # print(f"Data for {letter_type}: {json.dumps(data, indent=2)}")  # Debugging log
         
         #fetch the created_data function
         reference_no = data.get("REFERENCE NO")
@@ -148,13 +138,10 @@ def letter_form(letter_type):
         subject = data.get("SUBJECT")
         contact_name = data.get("Contact title")
         designation = data.get("designation")
-        no = data.get("no")  # Phone number
-        email = data.get("email")  # Email address
-
-        # Validate required fields
+        no = data.get("no")  
+        email = data.get("email")  
         if not no or not email:
             return "Phone number and email are required", 400
-        # Save to database
         try:
             db = SessionLocal()
             entry = LetterForm(
@@ -172,58 +159,126 @@ def letter_form(letter_type):
             db.commit()
         except SQLAlchemyError as e:
             db.rollback()
-            print(f"Database error: {e}")  # Log any DB issues
+            print(f"Database error: {e}")  
         finally:
             db.close()
-
-        # Get the corresponding filename from the mapping
         pdf_filename = PDF_NAME_MAP.get(letter_type)
         if not pdf_filename:
             return "Invalid letter type", 404
-
-        # Generate PDF with the dynamic filename
         output_path = os.path.join(app.config['OUTPUT_FOLDER'], pdf_filename)
         generate_pdf(data=data, document_type=letter_type, output_path=output_path)
-
-        # Redirect to PDF viewer
         return redirect(url_for('view_pdf', letter_type=letter_type))
-
-    # Render the appropriate form based on letter type
     return render_template(f'{letter_type}')
 
-@app.route('/view/<letter_type>') #pdf rendering 
+@app.route('/view/<letter_type>') 
 @login_required
 def view_pdf(letter_type):
-    """Render the generated PDF in the browser."""
-    # Get the corresponding filename from the mapping
     pdf_filename = PDF_NAME_MAP.get(letter_type)
     if not pdf_filename:
         return "Invalid letter type", 404
-
-    # Construct the full path to the PDF file
     pdf_path = os.path.join(app.config['OUTPUT_FOLDER'], pdf_filename)
-
-    # Check if the PDF file exists
     if not os.path.exists(pdf_path):
         return "PDF not found", 404
-
-    # Pass only the filename to the template
     return render_template('view_pdf.html', pdf_filename=pdf_filename)
 
-@app.route('/output/<path:filename>') #pdf output file serving (for download)
+@app.route('/output/<path:filename>')
 @login_required
 def serve_static(filename):
-    # Sanitize the filename to prevent directory traversal attacks
     safe_filename = os.path.basename(filename)
     file_path = os.path.join(app.config['OUTPUT_FOLDER'], safe_filename)
-    
-    # Check if the file exists
     if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")  # Debugging log
+        print(f"File not found: {file_path}")  
         return "File not found", 404
     
     # Serve the file
     return send_file(file_path)
+
+@app.route('/letters', methods=['GET'])
+@login_required
+def view_letters():
+    # Get filter from query string
+    letter_type = request.args.get('letter_type', None)
+
+    db = SessionLocal()
+    try:
+        # Query the database
+        query = db.query(LetterForm)
+        if letter_type:
+            query = query.filter_by(letter_type=letter_type)
+        letters = query.all()
+
+        # Convert letters to JSON format
+        letters_json = [
+            {
+                "id": letter.id,
+                "letter_type": letter.letter_type,
+                "reference_no": letter.reference_no,
+                "contract_title": letter.contract_title,
+                "subject": letter.subject,
+                "contact_name": letter.contact_name,
+                "designation": letter.designation,
+                "phone_no": letter.no,
+                "email": letter.email,
+            }
+            for letter in letters
+        ]
+
+    except SQLAlchemyError as e:
+        print(f"Database error: {e}")
+        letters_json = []
+    finally:
+        db.close()
+
+    # Render the template with JSON data
+    return render_template('excelviewer.html', letters=letters_json, letter_type=letter_type)
+
+@app.route('/export/<letter_type>', methods=['GET'])
+@login_required
+def export_to_excel(letter_type):
+    """Export filtered letters to an Excel file."""
+    db = SessionLocal()
+    try:
+        query = db.query(LetterForm)
+        if letter_type != 'all':
+            query = query.filter_by(letter_type=letter_type)
+        letters = query.all()
+
+        # Convert data to a DataFrame
+        data = [
+            {
+                "ID": letter.id,
+                "Letter Type": letter.letter_type,
+                "Reference No": letter.reference_no,
+                "Contract Title": letter.contract_title,
+                "Subject": letter.subject,
+                "Contact Name": letter.contact_name,
+                "Designation": letter.designation,
+                "Phone No": letter.no,
+                "Email": letter.email,
+            }
+            for letter in letters
+        ]
+        df = pd.DataFrame(data)
+
+        # Export to Excel
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name=f"{letter_type}_letters")
+        output.seek(0)
+
+        # Return the Excel file
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=f"{letter_type}_letters.xlsx"
+        )
+    except SQLAlchemyError as e:
+        print(f"Database error: {e}")
+        flash("An error occurred while exporting data.", "danger")
+        return redirect(url_for('view_letters'))
+    finally:
+        db.close()
 
 
 if __name__ == '__main__':
