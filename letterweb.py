@@ -7,6 +7,7 @@ import json
 from functools import wraps
 import pandas as pd
 from io import BytesIO
+from openpyxl.utils import get_column_letter
 
 app = Flask(__name__)
 app.secret_key = 'JawaJawaJawaGahDamnDiuLeiLouMou'  # Change this to a secure key in production
@@ -273,9 +274,10 @@ def api_view_letters():
 @app.route('/export/<letter_type>', methods=['GET'])
 @login_required
 def export_to_excel(letter_type):
-    """Export filtered letters to an Excel file."""
+    """Export filtered letters to an Excel file with auto-width columns and a serial number column."""
     db = SessionLocal()
     try:
+        # Query the database
         query = db.query(LetterForm)
         if letter_type != 'all':
             query = query.filter_by(letter_type=letter_type)
@@ -297,10 +299,31 @@ def export_to_excel(letter_type):
         ]
         df = pd.DataFrame(data)
 
+        # Add a "No." column (auto-incrementing serial number)
+        df.insert(0, "No.", range(1, len(df) + 1))
+
         # Export to Excel
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             df.to_excel(writer, index=False, sheet_name=f"{letter_type}_letters")
+
+            # Access the workbook and worksheet to adjust column widths
+            workbook = writer.book
+            worksheet = writer.sheets[f"{letter_type}_letters"]
+
+            # Auto-adjust column widths
+            for col in worksheet.columns:
+                max_length = 0
+                column = col[0].column_letter  # Get the column name (e.g., 'A', 'B', etc.)
+                for cell in col:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except TypeError:
+                        pass
+                adjusted_width = (max_length + 2)  # Add some padding
+                worksheet.column_dimensions[column].width = adjusted_width
+
         output.seek(0)
 
         # Return the Excel file

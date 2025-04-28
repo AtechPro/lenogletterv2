@@ -319,7 +319,7 @@ class SignatureSection:
         pdf.set_line_width(0.5)  # Set line width
         underline_x_start = pdf.l_margin
         underline_x_end = pdf.w - pdf.r_margin
-        pdf.line(underline_x_start, pdf.get_y(), 70, pdf.get_y())  # Draw a line across the available width
+        pdf.line(underline_x_start, pdf.get_y(), 80, pdf.get_y())  # Draw a line across the available width
 
         # Name and designation
         pdf.set_font("Helvetica", "B", 12)  
@@ -393,11 +393,6 @@ def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf")
     # Save the PDF
     pdf.output(output_path)
 
-
-
-
-USE_NAS_SIGNATURES = False  # Toggle this to switch between local and NAS paths
-
 # Contact dictionary
 CONTACTS = {
     "Dwayne Marshall Labangka": {
@@ -432,8 +427,9 @@ CONTACTS = {
     }
 }
 
+USE_NAS_SIGNATURES = False  # Toggle this to switch between local and NAS paths
+
 def resolve_signature_path(name):
-    """Resolve the correct path for the signature image."""
     # If USE_NAS_SIGNATURES is True, use the NAS directory
     if USE_NAS_SIGNATURES:
         base_dir = "Z:\\Technical\\Engineering\\Lenog\\QAQC\\Report\\Signatures"
@@ -468,10 +464,9 @@ def create_data(reference_no, contract_title, subject, documents, contact_name, 
     }
 
 
-# Example data
 
 """
-
+#data testing 
 data = create_data(
     reference_no="REF-2025-001", 
     contract_title="Flange Joint Management ",
@@ -485,12 +480,10 @@ data = create_data(
     contact_name="Dwayne Marshall Labangka",
     designation="Project Engineer"
 )
-
-
 """
 
 
-# Generate the PDF with the specified sections
+# PDF generation placeholder
 #generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
 #generate_pdf(data, document_type='cl', output_path="cover_letter.pdf")
 #generate_pdf(data, document_type='scope', output_path="scope_letter.pdf")
