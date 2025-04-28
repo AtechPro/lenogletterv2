@@ -16,23 +16,41 @@ app.config['OUTPUT_FOLDER'] = os.path.join(os.getcwd(), 'output')
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 
+def create_user(db, username, password):
+    """
+    Helper function to create a user in the database.
+    :param db: Database session
+    :param username: Username for the new user
+    :param password: Password for the new user
+    :return: None
+    """
+    try:
+        # Check if the user already exists
+        existing_user = db.query(User).filter_by(username=username).first()
+        if not existing_user:
+            # Create the user
+            new_user = User(username=username)
+            new_user.set_password(password)  # Assuming set_password hashes the password
+            db.add(new_user)
+            db.commit()
+            print(f"User '{username}' created successfully.")
+        else:
+            print(f"User '{username}' already exists.")
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating user '{username}': {e}")
+
+
 def create_admin_user():
     db = SessionLocal()
     try:
-        # Check if the admin user already exists
-        admin_user = db.query(User).filter_by(username="admin").first()
-        if not admin_user:
-            # Create the admin user
-            admin_user = User(username="lenogadmin")
-            admin_user.set_password("lenog12345")  
-            db.add(admin_user)
-            db.commit()
-            print("Admin user created successfully.")
-        else:
-            print("Admin user already exists.")
+        # Create the admin user
+        create_user(db, username="lenogadmin", password="lenog12345")
+        create_user(db, username="abc", password="123")
+
     except Exception as e:
         db.rollback()
-        print(f"Error creating admin user: {e}")
+        print(f"An unexpected error occurred: {e}")
     finally:
         db.close()
 

@@ -29,7 +29,7 @@
 
             <div class="form-group">
                 <label>Documents:</label>
-                <div id="document-checkboxes">
+                <div id="document-checkboxes" class="sortable">
                     <!-- Predetermined and dynamically added documents will appear here -->
                 </div>
                 
@@ -69,110 +69,6 @@
         
     </div>
 
-    <script>
-        // Predetermined documents
-        const predeterminedDocuments = [
-            "Cover letter for technical proposal",
-            "Exhibit I (Scope of Work)",
-            "Exhibit III (Unpriced schedule of rates)",
-            "HSE Documents",
-            "Key Personnel CV / Resume",
-            "Company Experience",
-            "Letter of compliance to Scope of Work",
-            "Letter of compliance to Terms and Condition of Contracts",
-            "Agency Letter"
-        ];
-
-        // Function to add a document to the form
-        function addDocumentToForm(docValue, autoCheck = false) {
-            const docId = 'doc-' + Date.now();
-
-            // Create new checkbox element
-            const checkboxDiv = document.createElement('div');
-            checkboxDiv.className = 'checkbox-item';
-
-            // Create the input element
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.name = 'documents[]';
-            checkbox.value = docValue;
-            checkbox.id = docId;
-            checkbox.checked = autoCheck; // Auto-tick the checkbox if specified
-
-            // Create the label
-            const label = document.createElement('label');
-            label.htmlFor = docId;
-            label.textContent = docValue;
-
-            // Add elements to the form
-            checkboxDiv.appendChild(checkbox);
-            checkboxDiv.appendChild(label);
-            document.getElementById('document-checkboxes').appendChild(checkboxDiv);
-
-            // Highlight the new document briefly
-            checkboxDiv.style.backgroundColor = '#f0f8ff';
-            setTimeout(() => {
-                checkboxDiv.style.backgroundColor = '';
-            }, 1000);
-        }
-
-        // Load saved documents from localStorage on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            // Retrieve saved documents from localStorage
-            const savedDocuments = JSON.parse(localStorage.getItem('documents')) || [];
-
-            // Combine predetermined and saved documents, ensuring no duplicates
-            const allDocuments = [...new Set([...predeterminedDocuments, ...savedDocuments])];
-
-            // Add all documents to the form
-            allDocuments.forEach(doc => {
-                addDocumentToForm(doc);
-            });
-        });
-
-        // Add event listener for the "Add" button
-        document.getElementById('add-document-btn').addEventListener('click', function () {
-            const newDocValue = document.getElementById('new-document').value.trim();
-            if (newDocValue) {
-                // Check if the document already exists
-                const existingDocuments = document.querySelectorAll('#document-checkboxes input[type="checkbox"]');
-                const isDuplicate = Array.from(existingDocuments).some(checkbox => checkbox.value === newDocValue);
-
-                if (isDuplicate) {
-                    showNotification("This document already exists in the list.");
-                    return;
-                }
-
-                // Add the new document to the form and auto-check it
-                addDocumentToForm(newDocValue, true);
-
-                // Save the updated list to localStorage
-                const savedDocuments = JSON.parse(localStorage.getItem('documents')) || [];
-                savedDocuments.push(newDocValue);
-
-                // Ensure no duplicates in localStorage
-                const uniqueDocuments = [...new Set(savedDocuments)];
-                localStorage.setItem('documents', JSON.stringify(uniqueDocuments));
-
-                // Clear the input field
-                document.getElementById('new-document').value = '';
-
-                // Show success notification
-                showNotification("Document added successfully!");
-            } else {
-                showNotification("Please enter a valid document name.");
-            }
-        });
-
-        // Function to show notifications
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000); // Hide after 3 seconds
-        }
-    </script>
+    <script src="./cl.js"></script>
 </body>
 </html>
