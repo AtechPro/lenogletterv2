@@ -38,6 +38,14 @@ Tbh i consider docker tapi mcm melebih2 pula jadi sya letak ja di sini the docke
 
 ![Superrior over Docker gang](assets/whale-docker.gif)
 
+**Great NEWS**
+
+If you want to try the letter generation and host it I make it public, you should make sure docker is installed on the machine before hosting
+
+    docker pull atechpro/lenogwebui:v2.1
+
+this is my 1st time doing proper CI/CD, just want to know how convenience/complicated I could develop. Future me would Proud like my old project  [Centralized Hub Home Automation](https://github.com/AtechPro/chha), which now are more proper CI/CD impliementation 
+
 Despite with that its not run like proclaim run over **Over 50 Million Devices** which are JAVA
 
 ![kima kepada java](assets/cursejava.gif)
