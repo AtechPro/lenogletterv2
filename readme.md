@@ -46,7 +46,7 @@ If you want to try the letter generation and host it I make it public, you shoul
 
 this is my 1st time doing proper CI/CD, just want to know how convenience/complicated I could develop. Future me would Proud like my old project  [Centralized Hub Home Automation](https://github.com/AtechPro/chha), which now are more proper CI/CD impliementation 
 
-Despite with that its not run like proclaim run over **Over 50 Million Devices** which are JAVA
+Despite with that its not run like proclaim run over **Over 50 Million Devices** which are JAVA, and this is not java, its is **PAITON**
 
 ![kima kepada java](assets/cursejava.gif)
 
