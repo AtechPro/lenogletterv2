@@ -1,183 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Letters</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
-</head>
-<style>
-    /* CSS Variables */
-    :root {
-        --deep-teal: #167E66;
-        --muted-green: #8CB8AC;
-        --pure-white: #FFFFFF;
-        --dark-teal: #20735F;
-        --medium-teal: #2CA184;
-        --light-mint: #FAFCFB;
-        --light-gray: #F5F5F5;
-        --light-gray-2: #f0f0f0;
-        --border-radius: 8px;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --hover-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
+    <style>
+        /* CSS Variables */
+        :root {
+            --deep-teal: #167E66;
+            --muted-green: #8CB8AC;
+            --pure-white: #FFFFFF;
+            --dark-teal: #20735F;
+            --medium-teal: #2CA184;
+            --light-mint: #FAFCFB;
+            --light-gray: #F5F5F5;
+            --light-gray-2: #f0f0f0;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-    /* Reset Default Styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        /* Reset Default Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Body Styling */
-    body {
-        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-        background-color: var(--light-mint);
-        color: var(--deep-teal);
-        line-height: 1.6;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        padding: 2rem;
-    }
-
-    /* Header Styling */
-    h1 {
-        text-align: center;
-        margin-bottom: 2rem;
-        color: var(--dark-teal);
-        font-weight: 700;
-    }
-
-    /* Center the heading using a wrapper div */
-    .heading-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        position: relative;
-    }
-
-    /* Adjust layout for filter and export buttons */
-    .button-container-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        width: 100%;
-    }
-
-    .filter-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .export-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: flex-end;
-    }
-
-    /* Ensure buttons are styled consistently */
-    .button {
-        padding: 0.75rem 1.5rem;
-        background-color: var(--medium-teal);
-        color: var(--pure-white);
-        text-decoration: none;
-        border-radius: var(--border-radius);
-        font-weight: 500;
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        text-align: center;
-    }
-
-    .button:hover,
-    .button:focus {
-        background-color: var(--dark-teal);
-        transform: translateY(-2px);
-        box-shadow: var(--hover-shadow);
-        outline: none;
-    }
-
-    /* Table Styling */
-    .letters-table {
-        width: 100%;
-        table-layout: auto; /* Dynamic column sizing */
-        border-collapse: collapse;
-        background-color: var(--pure-white);
-        border-radius: var(--border-radius);
-        overflow: hidden;
-        box-shadow: var(--box-shadow);
-    }
-
-    .letters-table th,
-    .letters-table td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid var(--muted-green);
-        word-wrap: break-word; /* Prevent text overflow */
-        white-space: nowrap; /* Prevent text wrapping */
-    }
-
-    .letters-table th {
-        background-color: var(--medium-teal);
-        color: var(--pure-white);
-        font-weight: bold;
-    }
-
-    .letters-table td {
-        white-space: normal; /* Allow wrapping for long text */
-    }
-
-    /* Responsive Design Adjustments */
-    @media (max-width: 768px) {
-        .button-container-wrapper {
+        /* Body Styling */
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-mint);
+            color: var(--deep-teal);
+            line-height: 1.6;
+            display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Header Styling */
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-teal);
+            font-weight: 700;
+        }
+
+        .heading-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .button-container-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            width: 100%;
         }
 
         .filter-buttons,
         .export-buttons {
-            justify-content: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .button {
-            width: 80%;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--medium-teal);
+            color: var(--pure-white);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button:hover,
+        .button:focus {
+            background-color: var(--dark-teal);
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+            outline: none;
+        }
+
+        .letters-table {
+            width: 100%;
+            table-layout: auto;
+            border-collapse: collapse;
+            background-color: var(--pure-white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
         }
 
         .letters-table th,
         .letters-table td {
-            padding: 0.75rem;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--muted-green);
+            white-space: nowrap;
         }
-    }
 
-    /* Style for the back button */
-    .back-button {
-        display: inline-block;
-        margin-top: 1.5rem;
-        padding: 0.75rem 1.5rem;
-        background-color: var(--medium-teal);
-        color: var(--pure-white);
-        text-decoration: none;
-        border-radius: var(--border-radius);
-        font-weight: 500;
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        text-align: center;
-    }
+        .letters-table th {
+            background-color: var(--medium-teal);
+            color: var(--pure-white);
+            font-weight: bold;
+        }
 
-    .back-button:hover,
-    .back-button:focus {
-        background-color: var(--dark-teal);
-        transform: translateY(-2px);
-        box-shadow: var(--hover-shadow);
-        outline: none;
-    }
-</style>
+        .letters-table td {
+            white-space: normal;
+        }
 
+        @media (max-width: 768px) {
+            .button-container-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-buttons,
+            .export-buttons {
+                justify-content: center;
+            }
+
+            .button {
+                width: 80%;
+            }
+
+            .letters-table th,
+            .letters-table td {
+                padding: 0.75rem;
+            }
+
+            #pagination button.button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--medium-teal);
+            color: var(--pure-white);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .back-button:hover,
+        .back-button:focus {
+            background-color: var(--dark-teal);
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+            outline: none;
+        }
+    </style>
+</head>
 <body>
     <div class="heading-wrapper">
         <h1>Export Letter Data to Excel</h1>
@@ -185,14 +176,10 @@
 
     <div class="button-container-wrapper">
         <!-- Filter Buttons -->
-        <div class="button-container filter-buttons">
-            <!-- Buttons will be dynamically populated by JavaScript -->
-        </div>
+        <div class="button-container filter-buttons"></div>
 
         <!-- Export Buttons -->
-        <div class="button-container export-buttons">
-            <!-- Buttons will be dynamically populated by JavaScript -->
-        </div>
+        <div class="button-container export-buttons"></div>
     </div>
 
     <!-- Letters Table -->
@@ -210,16 +197,16 @@
                 <th>Email</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Table rows will be dynamically populated by JavaScript -->
-        </tbody>
+        <tbody></tbody>
     </table>
+
+    <!-- Pagination Controls -->
+    <div id="pagination" style="margin-top: 1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem;"></div>
 
     <a href="/" class="back-button">Back to Main</a>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Button data for filters and exports
+        document.addEventListener('DOMContentLoaded', function () {
             const buttonData = [
                 { type: 'all', name: 'All' },
                 { type: 'cl', name: 'Cover Letter' },
@@ -227,12 +214,18 @@
                 { type: 'scope', name: 'Scope for Work' },
                 { type: 'toc', name: 'Terms and Condition' }
             ];
-        
-            // Containers for filter and export buttons
+
             const filterContainer = document.querySelector('.filter-buttons');
             const exportContainer = document.querySelector('.export-buttons');
-        
-            // Generate filter buttons
+            const tableBody = document.querySelector('.letters-table tbody');
+            const paginationDiv = document.getElementById('pagination');
+
+            let currentPage = 1;
+            const rowsPerPage = 10;
+            let allData = [];
+            let currentType = 'all';
+
+            // Generate buttons
             buttonData.forEach(button => {
                 const filterButton = document.createElement('a');
                 filterButton.href = '#';
@@ -241,8 +234,7 @@
                 filterButton.dataset.type = button.type;
                 filterContainer.appendChild(filterButton);
             });
-        
-            // Generate export buttons
+
             buttonData.forEach(button => {
                 const exportButton = document.createElement('a');
                 exportButton.href = `/export/${button.type}`;
@@ -250,55 +242,104 @@
                 exportButton.textContent = button.type === 'all' ? 'Export All' : `Export ${button.name}`;
                 exportContainer.appendChild(exportButton);
             });
-        
-            const tableBody = document.querySelector('.letters-table tbody');
-        
-            // Function to fetch and populate table data
+
             function fetchAndPopulateTable(letterType = 'all') {
                 const url = letterType === 'all' ? '/api/letters' : `/api/letters?letter_type=${letterType}`;
-        
+
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
-                        // Clear existing table rows
-                        tableBody.innerHTML = '';
-        
-                        // Initialize a counter for auto-incrementing numbers
-                        let counter = 1;
-        
-                        // Populate the table with data
-                        data.forEach(letter => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${counter}</td> <!-- Auto-incremented number -->
-                                <td>${letter.letter_type}</td>
-                                <td>${letter.reference_no}</td>
-                                <td>${letter.contract_title}</td>
-                                <td>${letter.subject}</td>
-                                <td>${letter.contact_name}</td>
-                                <td>${letter.designation}</td>
-                                <td>${letter.phone_no}</td>
-                                <td>${letter.email}</td>
-                            `;
-                            tableBody.appendChild(row);
-        
-                            // Increment the counter
-                            counter++;
-                        });
+                        allData = data;
+                        currentType = letterType;
+                        currentPage = 1;
+                        displayTable(currentPage);
+                        setupPagination();
                     })
                     .catch(error => console.error('Error fetching letters:', error));
             }
-        
-            // Add event listeners to filter buttons
-            filterContainer.addEventListener('click', function(event) {
+
+            function displayTable(page) {
+                tableBody.innerHTML = '';
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedData = allData.slice(start, end);
+
+                let counter = (page - 1) * rowsPerPage + 1;
+
+                paginatedData.forEach(letter => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${counter}</td>
+                        <td>${letter.letter_type}</td>
+                        <td>${letter.reference_no}</td>
+                        <td>${letter.contract_title}</td>
+                        <td>${letter.subject}</td>
+                        <td>${letter.contact_name}</td>
+                        <td>${letter.designation}</td>
+                        <td>${letter.phone_no}</td>
+                        <td>${letter.email}</td>
+                    `;
+                    tableBody.appendChild(row);
+                    counter++;
+                });
+            }
+
+            function setupPagination() {
+                paginationDiv.innerHTML = '';
+                const totalPages = Math.ceil(allData.length / rowsPerPage);
+
+                if (totalPages <= 1) return;
+
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = 'Previous';
+                prevBtn.className = 'button';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTable(currentPage);
+                        setupPagination();
+                    }
+                };
+                paginationDiv.appendChild(prevBtn);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = 'button';
+                    if (i === currentPage) {
+                        btn.style.backgroundColor = 'var(--dark-teal)';
+                    }
+                    btn.addEventListener('click', () => {
+                        currentPage = i;
+                        displayTable(currentPage);
+                        setupPagination();
+                    });
+                    paginationDiv.appendChild(btn);
+                }
+
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = 'Next';
+                nextBtn.className = 'button';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTable(currentPage);
+                        setupPagination();
+                    }
+                };
+                paginationDiv.appendChild(nextBtn);
+            }
+
+            filterContainer.addEventListener('click', function (event) {
                 if (event.target.classList.contains('button')) {
                     event.preventDefault();
                     const letterType = event.target.dataset.type;
                     fetchAndPopulateTable(letterType);
                 }
             });
-        
-            // Initial fetch for all letters
+
             fetchAndPopulateTable();
         });
     </script>

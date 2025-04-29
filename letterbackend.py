@@ -214,14 +214,11 @@ class ToCSection:
 class AckSection:
     @staticmethod
     def add(pdf, data):
-        """Add the cover letter section to the PDF"""
         pdf.set_y(40)
-        
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF ACKNOWLEDGEMENT TO EXHIBIT V', align='C', ln=True)
         pdf.ln(10)
-        
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=11, style='B')
@@ -243,7 +240,7 @@ class AckSection:
         # Add Subject
         add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
-        pdf.ln(10)
+        pdf.ln(5)
         
         # Main body text
         pdf.set_font("Helvetica", size=11)
@@ -271,10 +268,8 @@ class ClarificationSection:
             f"For further clarification, do not hesitate to contact Mr. {contact_title} "
             f"at {data.get('no', '')} or email {data.get('email', '')}.\n"
         )
-        
         # Calculate available width based on margins
         available_width = pdf.w - pdf.l_margin - pdf.r_margin
-        # Use the calculated width to ensure text fits
         pdf.multi_cell(available_width, 10, contact_info)
 
 
@@ -520,9 +515,7 @@ data = create_data(
         ],
         contact_name="Dwayne Marshall Labangka",
         designation="Project Engineer"
-    )
-    
-    
+    )  
 """
 
 # Generate all document types
