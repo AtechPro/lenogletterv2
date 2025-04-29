@@ -1,6 +1,7 @@
 # Ignore all .db files in the /databases directory
 /databases/*.db
-
+/signature/*.png
+/signature/*.jpg
 # Ignore all .pdf files in the /output directory
 /output/*.pdf
 
