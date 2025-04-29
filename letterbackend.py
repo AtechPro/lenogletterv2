@@ -117,78 +117,99 @@ class ScopeSection:
         
         # Main body text
         pdf.set_font("Helvetica", size=12)
-        pdf.write(10, "Dear Sir/Madam,\n")
+        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
+        # Use write instead of multi_cell to avoid spacing problems
         pdf.write(10, "We are writing in response to the ")
         
         pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
         pdf.set_font("Helvetica", "", 12)  # Reset to normal font
 
+        # Write inline instead of multi_cell to avoid space issues
         pdf.write(10, " for ")
 
+        # Underlined contract title
         pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Helvetica", "", 12)  # Reset to normal font
-        pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ")
+        
+        # Continue with normal text
+        pdf.write(10, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ")
         pdf.set_font("Helvetica", "B", 12)
-        pdf.write(10, "ATTACHMENT A - SCOPE OF WORKS.\n")
+        pdf.write(10, "ATTACHMENT A - SCOPE OF WORKS.\n\n")
         pdf.set_font("Helvetica", "", 12)
-        pdf.ln(3)
-        pdf.write(10, "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Scope of Work, and we are fully committed to meet and comply with all the stipulated requirements, scopes, terms and conditions.\n")
+        
+        # Multi-line content with proper width calculation
+        text = "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Scope of Work, and we are fully committed to meet and comply with all the stipulated requirements, scopes, terms and conditions."
+        
+        # Calculate available width based on margins
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+        pdf.multi_cell(available_width, 10, text, align='J')
         pdf.ln(3)
 
 class ToCSection:
     @staticmethod
     def add(pdf, data):
-        """Add the cover letter section to the PDF"""
+        """Add the Letter of Compliance to Terms & Conditions section to the PDF"""
         pdf.set_y(40)
-        
+
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF COMPLIANCE TO TERMS & CONDITIONS', align='C', ln=True)
         pdf.ln(10)
         
-        # Reference, Contract Title, Subject
+        # Helper function to add labeled cells
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=12, style='B')
             pdf.cell(width, 10, f'{label}:', border=0)
             pdf.set_font("Helvetica", size=12, style='BU')
             text = data_dict.get(key, "").upper()
-            if len(text) > 0:
+            if text:
                 pdf.multi_cell(0, 10, text, align='L')
             else:
                 pdf.cell(0, 10, '', ln=True)
             pdf.ln(2)
 
-        # Add Reference
+        # Add Reference No, Contract Title, Subject
         add_labeled_cell(pdf, 'REFERENCE NO', 'REFERENCE NO', data)
-
-        # Add Contract Title
         add_labeled_cell(pdf, 'CONTRACT TITLE', 'CONTRACT TITLE', data)
-
-        # Add Subject
         add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
-        pdf.ln(10)
-        
+        pdf.ln(5)  # Extra space before body text
+
         # Main body text
         pdf.set_font("Helvetica", size=12)
-        pdf.write(10, "Dear Sir/Madam,\n")
+        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
+
         pdf.write(10, "We are writing in response to the ")
-        
+
+        # Underlined Reference Number
         pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
-        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)
 
         pdf.write(10, " for ")
 
+        # Underlined Contract Title
         pdf.set_font("Helvetica", style="BU", size=12)
         pdf.write(10, data.get("CONTRACT TITLE", "").upper())
-        pdf.set_font("Helvetica", "", 12)  # Reset to normal font
+        pdf.set_font("Helvetica", "", 12)
 
-        pdf.write(10, " After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the Terms & Conditions.\n")
-        pdf.write(10, "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Terms & Conditions, and we are fully committed to meet and comply with all the stipulated requirements, terms and conditions.\n")
-        pdf.ln(5)
+        pdf.write(10, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the ")
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.write(10, "ATTACHMENT B - TERMS & CONDITIONS.\n\n")
+        pdf.set_font("Helvetica", "", 12)
+
+        # Multi-line paragraph
+        body_text = (
+            "We would like to confirm our understanding of the requirements and specifications detailed "
+            "in the tender documentation. Our team has carefully reviewed each section of Terms & Conditions, "
+            "and we are fully committed to meet and comply with all the stipulated requirements, terms and conditions."
+        )
+
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+        pdf.multi_cell(available_width, 10, body_text, align='J')
+        pdf.ln(3)
 
 class AckSection:
     @staticmethod
@@ -249,7 +270,11 @@ class ClarificationSection:
             f"For further clarification, do not hesitate to contact Mr. {contact_title} "
             f"at {data.get('no', '')} or email {data.get('email', '')}.\n"
         )
-        pdf.multi_cell(0, 10, contact_info)
+        
+        # Calculate available width based on margins
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+        # Use the calculated width to ensure text fits
+        pdf.multi_cell(available_width, 10, contact_info)
 
 
 class CompClarificationSection:
@@ -262,7 +287,11 @@ class CompClarificationSection:
             f"For further clarification, do not hesitate to contact Mr. {contact_title} "
             f"at {data.get('no', '')} or email {data.get('email', '')}.\n"
         )
-        pdf.multi_cell(0, 10, contact_info)
+        
+        # Calculate available width based on margins
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+        # Use the calculated width to ensure text fits
+        pdf.multi_cell(available_width, 10, contact_info)
 
 
 class SignatureSection:
@@ -274,12 +303,14 @@ class SignatureSection:
 
         # Current vertical position
         current_y = pdf.get_y()
+        # In fpdf2, we can access the page height via pdf.h and bottom margin via pdf.b_margin
         page_height = pdf.h - pdf.b_margin  # Total height minus bottom margin
 
         # Check if the signature section fits on the current page
         if current_y + REQUIRED_HEIGHT > page_height:
             pdf.add_page()  # Add a new page
-            current_y = pdf.get_y()  # Update the current vertical position
+            # Important: get new Y position after page break
+            current_y = pdf.get_y()
 
         # Set the font for the thank you message
         pdf.set_font("Helvetica", "", 12)
@@ -359,7 +390,18 @@ DOCUMENT_SECTIONS = {
 }
 
 def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf"):
-
+    """
+    Generate a PDF with the given data using the specified document type or sections.
+    
+    Args:
+        data (dict): Dictionary containing the data to be inserted into the PDF
+        document_type (str, optional): Type of document to generate (e.g., 'ack', 'cl')
+        sections (list, optional): List of section classes to include in the PDF
+        output_path (str, optional): Path where the PDF will be saved
+    
+    Returns:
+        str: Path to the generated PDF
+    """
     # Use predefined sections if document_type is provided and sections are not
     if document_type and not sections:
         sections = DOCUMENT_SECTIONS.get(document_type)
@@ -389,9 +431,20 @@ def generate_pdf(data, document_type=None, sections=None, output_path="ack.pdf")
             section_method(pdf, data)
         except Exception as e:
             print(f"Error adding section {section_class.__name__}: {e}")
+            # Print more detailed error information to help with debugging
+            import traceback
+            traceback.print_exc()
     
     # Save the PDF
-    pdf.output(output_path)
+    try:
+        pdf.output(output_path)
+        print(f"Successfully created PDF: {output_path}")
+        return output_path
+    except Exception as e:
+        print(f"Error saving PDF to {output_path}: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
 # Contact dictionary
 CONTACTS = {
@@ -463,28 +516,27 @@ def create_data(reference_no, contract_title, subject, documents, contact_name, 
         "designation": designation
     }
 
-
-
+# Example usage:
 """
-#data testing 
 data = create_data(
-    reference_no="REF-2025-001", 
-    contract_title="Flange Joint Management ",
-    subject="Proposal for Flange Joint Integrity Work ",
-    documents=[
-        "Cover Letter",
-        "Scope of Work",
-        "Company Profile",
-        "Insurance & Certifications",
-    ],
-    contact_name="Dwayne Marshall Labangka",
-    designation="Project Engineer"
-)
+        reference_no="REF-2025-001", 
+        contract_title="Flange Joint Management",
+        subject="Proposal for Flange Joint Integrity Work",
+        documents=[
+            "Cover Letter",
+            "Scope of Work",
+            "Company Profile",
+            "Insurance & Certifications",
+        ],
+        contact_name="Dwayne Marshall Labangka",
+        designation="Project Engineer"
+    )
+    
+    
 """
 
-
-# PDF generation placeholder
-#generate_pdf(data, document_type='ack', output_path="acknowledgement letter.pdf")
+# Generate all document types
+#generate_pdf(data, document_type='ack', output_path="acknowledgement_letter.pdf")
 #generate_pdf(data, document_type='cl', output_path="cover_letter.pdf")
 #generate_pdf(data, document_type='scope', output_path="scope_letter.pdf")
-#generate_pdf(data, document_type='toc', output_path="toc_letter.pdf")
+#generate_pdf(data, document_type='toc', output_path="toc_letter.pdf")    

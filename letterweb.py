@@ -46,7 +46,7 @@ def create_admin_user():
     try:
         # Create the admin user
         create_user(db, username="lenogadmin", password="lenog12345")
-        create_user(db, username="abc", password="123")
+       #create_user(db, username="abc", password="123")
 
     except Exception as e:
         db.rollback()
