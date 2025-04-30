@@ -57,7 +57,7 @@ class CoverLetterSection:
         
         # Main body text
         pdf.set_font("Helvetica", size=11)
-        pdf.write(10, "Dear Sir/Madam,\n")
+        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
         pdf.write(10, "We would like to thank PETRONAS for the opportunity to quote for the above tender. We are pleased to hereby submit our Technical Proposal for the ")
         
         pdf.set_font("Helvetica", style="BU", size=11)
@@ -197,7 +197,7 @@ class ToCSection:
 
         pdf.write(10, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the ")
         pdf.set_font("Helvetica", "B", 11)
-        pdf.write(10, "ATTACHMENT B - TERMS & CONDITIONS.\n\n")
+        pdf.write(10, "ATTACHMENT B - TERMS & CONDITIONS.\n")
         pdf.set_font("Helvetica", "", 11)
 
         # Multi-line paragraph
@@ -249,6 +249,7 @@ class AckSection:
         pdf.write(10, "We are writing this letter to acknowledge that we have read and understood the ")
         pdf.set_font("Helvetica", style="B", size=11)
         pdf.write(10, "EXHIBIT V - HEALTH, SAFETY AND ENVIRONMENT REQUIREMENTS")
+        pdf.set_font("Helvetica",size=11)
         pdf.write(10, " for ")
         pdf.set_font("Helvetica", style="BU", size=11)
         pdf.write(10, data.get("REFERENCE NO", "").upper())
