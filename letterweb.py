@@ -16,51 +16,20 @@ app.config['OUTPUT_FOLDER'] = os.path.join(os.getcwd(), 'output')
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 
-def create_user(db, username, password):
-    """
-    Helper function to create a user in the database.
-    :param db: Database session
-    :param username: Username for the new user
-    :param password: Password for the new user
-    :return: None
-    """
-    try:
-        # Check if the user already exists
-        existing_user = db.query(User).filter_by(username=username).first()
-        if not existing_user:
-            # Create the user
-            new_user = User(username=username)
-            new_user.set_password(password)  # Assuming set_password hashes the password
-            db.add(new_user)
-            db.commit()
-            print(f"User '{username}' created successfully.")
-        else:
-            print(f"User '{username}' already exists.")
-    except Exception as e:
-        db.rollback()
-        print(f"Error creating user '{username}': {e}")
-
-
-def create_admin_user():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     db = SessionLocal()
     try:
-        # Create the admin user
-        create_user(db, username="lenogadmin", password="lenog12345")
-       #create_user(db, username="abc", password="123")
-
-    except Exception as e:
-        db.rollback()
-        print(f"An unexpected error occurred: {e}")
+        user_count = db.query(User).count()
     finally:
         db.close()
 
+    # If no users exist yet, force registration
+    if user_count == 0:
+        return redirect(url_for('register'))
 
-create_admin_user()
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+    # Regular login logic below this line
     if request.method == 'POST':
-
         if request.is_json:
             data = request.get_json()
             username = data.get('username')
@@ -91,9 +60,82 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    db = SessionLocal()
+    if request.method == 'POST':
+        # Handle both JSON and regular form data
+        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+        else:
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+        # Validate input
+        if not username or not password:
+            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    "success": False,
+                    "message": "Username and password are required."
+                })
+            else:
+                return redirect(url_for('register') + '?msg=Username+and+password+are+required&category=danger')
+
+        db = SessionLocal()
+        try:
+            existing_user = db.query(User).filter_by(username=username).first()
+            if existing_user:
+                if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({
+                        "success": False,
+                        "message": "Username already taken."
+                    })
+                else:
+                    return redirect(url_for('register') + '?msg=Username+already+taken&category=danger')
+
+            new_user = User(username=username)
+            new_user.set_password(password)
+            db.add(new_user)
+            db.commit()
+
+            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    "success": True,
+                    "message": "Registration successful!",
+                    "redirect": url_for('login')
+                })
+            else:
+                return redirect(url_for('login') + '?msg=Registration+successful!&category=success')
+        except Exception as e:
+            db.rollback()
+            error_msg = f"Error creating user: {str(e)}"
+            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    "success": False,
+                    "message": error_msg
+                })
+            else:
+                return redirect(url_for('register') + f'?msg={error_msg.replace(" ", "+")}&category=danger')
+        finally:
+            db.close()
+
+    return render_template('register.html')
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        db = SessionLocal()
+        try:
+            user_count = db.query(User).count()
+        finally:
+            db.close()
+
+        if user_count == 0:
+            return f(*args, **kwargs)  # Allow access if no users exist
+
         if not session.get('logged_in'):
             flash("You need to log in first.", "warning")
             return redirect(url_for('login'))

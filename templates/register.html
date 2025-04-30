@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/static/form.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <div id="message" class="text-center"></div>
+        <form id="register-form" class="form">
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">Register</button>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#register-form').on('submit', function (event) {
+                event.preventDefault(); // Prevent default submission
+
+                const username = $('#username').val().trim();
+                const password = $('#password').val();
+
+                // Optional: simple frontend validation
+                if (!username || !password) {
+                    $('#message').html(`<p style='color: red;'>Username and password are required.</p>`);
+                    return;
+                }
+
+                $.ajax({
+                    url: '/register',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username: username, password: password }),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#message').html(`<p style='color: green;'>${response.message}</p>`);
+                            setTimeout(() => {
+                                window.location.href = response.redirect || "{{ url_for('login') }}";
+                            }, 1500);
+                        } else {
+                            $('#message').html(`<p style='color: red;'>${response.message || 'Registration failed.'}</p>`);
+                        }
+                    },
+                    error: function (xhr) {
+                        let errorMsg = "An error occurred.";
+                        try {
+                            const err = JSON.parse(xhr.responseText);
+                            errorMsg = err.message || errorMsg;
+                        } catch (e) {
+                            errorMsg = "Failed to register.";
+                        }
+                        $('#message').html(`<p style='color: red;'>${errorMsg}</p>`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
