@@ -31,17 +31,17 @@ class CoverLetterSection:
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'COVER LETTER (TECHNICAL PROPOSAL)', align='C', ln=True)
-        pdf.ln(10)
+        pdf.ln(5)
         
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=11, style='B')
-            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.cell(width, 6, f'{label}:', border=0)
             pdf.set_font("Helvetica", size=11, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
-                pdf.multi_cell(0, 10, text, align='L')
+                pdf.multi_cell(0, 6, text, align='L')
             else:
-                pdf.cell(0, 10, '', ln=True)
+                pdf.cell(0, 6, '', ln=True)
             pdf.ln(2)
 
         # Add Reference
@@ -53,33 +53,35 @@ class CoverLetterSection:
         # Add Subject
         add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
-        pdf.ln(10)
+        pdf.ln(3)
         
         # Main body text
         pdf.set_font("Helvetica", size=11)
-        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
-        pdf.write(10, "We would like to thank PETRONAS for the opportunity to quote for the above tender. We are pleased to hereby submit our Technical Proposal for the ")
+        pdf.multi_cell(0, 6, "Dear Sir/Madam,", align='J')
+        pdf.write(6, "We would like to thank PETRONAS for the opportunity to quote for the above tender. We are pleased to hereby submit our Technical Proposal for the ")
         
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("CONTRACT TITLE", "").upper())
+        pdf.write(6, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Helvetica", "", 11)  # Reset to normal font
 
-        pdf.write(10, ". We hope our Technical Proposal and capabilities meet your requirement.\n")
-        
+        pdf.write(6, ". We hope our Technical Proposal and capabilities meet your requirement.\n")
+        pdf.ln(3)
         # List of documents
         pdf.set_font("Helvetica", "B", 11)  # Set to Bold
-        pdf.write(10, "List of documents:\n")
+        pdf.write(6, "List of documents:\n")
         pdf.set_font("Helvetica", "", 11)  # Reset to normal font
 
         user_documents = data.get("documents", [])
         if not user_documents:
-            pdf.write(10, "No documents provided.\n")
+            pdf.write(6, "No documents provided.\n")
         else:
             for index, doc in enumerate(user_documents):
                 prefix = CoverLetterSection.number_to_letter(index) + '.'
                 pdf.cell(10, 10, '')
                 pdf.cell(10, 10, prefix)
                 pdf.cell(0, 10, doc, ln=True)
+
+        
 
 class ScopeSection:
     @staticmethod
@@ -90,18 +92,18 @@ class ScopeSection:
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF COMPLIANCE TO SCOPE OF WORKS', align='C', ln=True)
-        pdf.ln(10)
+        pdf.ln(5)
         
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=11, style='B')
-            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.cell(width, 6, f'{label}:', border=0)
             pdf.set_font("Helvetica", size=11, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
-                pdf.multi_cell(0, 10, text, align='L')
+                pdf.multi_cell(0, 6, text, align='L')
             else:
-                pdf.cell(0, 10, '', ln=True)
+                pdf.cell(0, 6, '', ln=True)
             pdf.ln(2)
 
         # Add Reference
@@ -113,38 +115,39 @@ class ScopeSection:
         # Add Subject
         add_labeled_cell(pdf, 'SUBJECT', 'SUBJECT', data)
 
-        pdf.ln(10)
+        pdf.ln(3)
         
         # Main body text
         pdf.set_font("Helvetica", size=11)
-        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
+        pdf.multi_cell(0, 6, "Dear Sir/Madam,\n", align='J')
         # Use write instead of multi_cell to avoid spacing problems
-        pdf.write(10, "We are writing in response to the ")
+        pdf.write(6, "We are writing in response to the ")
         
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("REFERENCE NO", "").upper())
+        pdf.write(6, data.get("REFERENCE NO", "").upper())
         pdf.set_font("Helvetica", "", 11)  # Reset to normal font
 
         # Write inline instead of multi_cell to avoid space issues
-        pdf.write(10, " for ")
+        pdf.write(6, " for ")
 
         # Underlined contract title
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("CONTRACT TITLE", "").upper())
+        pdf.write(6, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Helvetica", "", 11)  # Reset to normal font
         
         # Continue with normal text
-        pdf.write(10, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ")
+        pdf.write(6, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the scope of work outlined in the ")
         pdf.set_font("Helvetica", "B", 11)
-        pdf.write(10, "ATTACHMENT A - SCOPE OF WORKS.\n\n")
+        pdf.write(6, "ATTACHMENT A - SCOPE OF WORKS.\n")
         pdf.set_font("Helvetica", "", 11)
         
+        pdf.ln(3)
         # Multi-line content with proper width calculation
         text = "We would like to confirm our understanding of the requirements and specifications detailed in the tender documentation. Our team has carefully reviewed each section of Scope of Work, and we are fully committed to meet and comply with all the stipulated requirements, scopes, terms and conditions."
         
         # Calculate available width based on margins
         available_width = pdf.w - pdf.l_margin - pdf.r_margin
-        pdf.multi_cell(available_width, 10, text, align='J')
+        pdf.multi_cell(available_width, 6, text, align='J')
         pdf.ln(3)
 
 class ToCSection:
@@ -156,18 +159,18 @@ class ToCSection:
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF COMPLIANCE TO TERMS & CONDITIONS', align='C', ln=True)
-        pdf.ln(10)
+        pdf.ln(5)
         
         # Helper function to add labeled cells
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=11, style='B')
-            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.cell(width, 6, f'{label}:', border=0)
             pdf.set_font("Helvetica", size=11, style='BU')
             text = data_dict.get(key, "").upper()
-            if text:
-                pdf.multi_cell(0, 10, text, align='L')
+            if len(text) > 0:
+                pdf.multi_cell(0, 6, text, align='L')
             else:
-                pdf.cell(0, 10, '', ln=True)
+                pdf.cell(0, 6, '', ln=True)
             pdf.ln(2)
 
         # Add Reference No, Contract Title, Subject
@@ -179,26 +182,27 @@ class ToCSection:
 
         # Main body text
         pdf.set_font("Helvetica", size=11)
-        pdf.multi_cell(0, 10, "Dear Sir/Madam,\n", align='J')
+        pdf.multi_cell(0, 6, "Dear Sir/Madam,\n", align='J')
 
-        pdf.write(10, "We are writing in response to the ")
+        pdf.write(6, "We are writing in response to the ")
 
         # Underlined Reference Number
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("REFERENCE NO", "").upper())
+        pdf.write(6, data.get("REFERENCE NO", "").upper())
         pdf.set_font("Helvetica", "", 11)
 
-        pdf.write(10, " for ")
+        pdf.write(6, " for ")
 
         # Underlined Contract Title
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("CONTRACT TITLE", "").upper())
+        pdf.write(6, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Helvetica", "", 11)
 
-        pdf.write(10, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the ")
+        pdf.write(6, ". After a thorough review of the documents, we are pleased to submit our letter of compliance with the terms & conditions outlined in the ")
         pdf.set_font("Helvetica", "B", 11)
-        pdf.write(10, "ATTACHMENT B - TERMS & CONDITIONS.\n")
+        pdf.write(6, "ATTACHMENT B - TERMS & CONDITIONS.\n")
         pdf.set_font("Helvetica", "", 11)
+        pdf.ln(3)
 
         # Multi-line paragraph
         body_text = (
@@ -208,7 +212,7 @@ class ToCSection:
         )
 
         available_width = pdf.w - pdf.l_margin - pdf.r_margin
-        pdf.multi_cell(available_width, 10, body_text, align='J')
+        pdf.multi_cell(available_width, 6, body_text, align='J')
         pdf.ln(3)
  
 class AckSection:
@@ -218,17 +222,17 @@ class AckSection:
         # Title
         pdf.set_font("Helvetica", size=14, style='BU')
         pdf.cell(0, 10, 'LETTER OF ACKNOWLEDGEMENT TO EXHIBIT V', align='C', ln=True)
-        pdf.ln(10)
+        pdf.ln(5)
         # Reference, Contract Title, Subject
         def add_labeled_cell(pdf, label, key, data_dict, width=60):
             pdf.set_font("Helvetica", size=11, style='B')
-            pdf.cell(width, 10, f'{label}:', border=0)
+            pdf.cell(width, 6, f'{label}:', border=0)
             pdf.set_font("Helvetica", size=11, style='BU')
             text = data_dict.get(key, "").upper()
             if len(text) > 0:
-                pdf.multi_cell(0, 10, text, align='L')
+                pdf.multi_cell(0, 6, text, align='L')
             else:
-                pdf.cell(0, 10, '', ln=True)
+                pdf.cell(0, 6, '', ln=True)
             pdf.ln(2)
 
         # Add Reference
@@ -244,18 +248,18 @@ class AckSection:
         
         # Main body text
         pdf.set_font("Helvetica", size=11)
-        pdf.write(10, "Dear Sir/Madam,\n")
+        pdf.write(6, "Dear Sir/Madam,\n")
         pdf.ln(3)
-        pdf.write(10, "We are writing this letter to acknowledge that we have read and understood the ")
+        pdf.write(6, "We are writing this letter to acknowledge that we have read and understood the ")
         pdf.set_font("Helvetica", style="B", size=11)
-        pdf.write(10, "EXHIBIT V - HEALTH, SAFETY AND ENVIRONMENT REQUIREMENTS")
+        pdf.write(6, "EXHIBIT V - HEALTH, SAFETY AND ENVIRONMENT REQUIREMENTS")
         pdf.set_font("Helvetica",size=11)
-        pdf.write(10, " for ")
+        pdf.write(6, " for ")
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("REFERENCE NO", "").upper())
-        pdf.write(10, " ")
+        pdf.write(6, data.get("REFERENCE NO", "").upper())
+        pdf.write(6, " ")
         pdf.set_font("Helvetica", style="BU", size=11)
-        pdf.write(10, data.get("CONTRACT TITLE", "").upper())
+        pdf.write(6, data.get("CONTRACT TITLE", "").upper())
         pdf.set_font("Helvetica", "", 11)  # Reset to normal font
         pdf.ln(10)
 
@@ -271,7 +275,7 @@ class ClarificationSection:
         )
         # Calculate available width based on margins
         available_width = pdf.w - pdf.l_margin - pdf.r_margin
-        pdf.multi_cell(available_width, 10, contact_info)
+        pdf.multi_cell(available_width, 6, contact_info)
 
 
 class CompClarificationSection:
@@ -288,7 +292,21 @@ class CompClarificationSection:
         # Calculate available width based on margins
         available_width = pdf.w - pdf.l_margin - pdf.r_margin
         # Use the calculated width to ensure text fits
-        pdf.multi_cell(available_width, 10, contact_info)
+        pdf.multi_cell(available_width, 6, contact_info)
+
+class CoverClarificationSection:
+    @staticmethod
+    def add(pdf, data):
+        pdf.ln(10)
+        """Add the clarification contact section to the PDF"""
+        contact_title = data.get('Contact title', '')
+        contact_info = (
+            f"For further clarification, do not hesitate to contact Mr. {contact_title} "
+            f"at {data.get('no', '')} or email {data.get('email', '')}.\n"
+        )
+        # Calculate available width based on margins
+        available_width = pdf.w - pdf.l_margin - pdf.r_margin
+        pdf.multi_cell(available_width, 6, contact_info)
 
 
 class SignatureSection:
@@ -370,7 +388,7 @@ DOCUMENT_SECTIONS = {
     ],
     'cl': [
         CoverLetterSection,
-        ClarificationSection,
+        CoverClarificationSection,
         SignatureSection
     ],
     'scope': [
@@ -448,7 +466,7 @@ CONTACTS = {
     },
     "Sao Lip Zhou": {
         "Contact title": "Sao Lip Zhou",
-        "no": "+60 XX-XXXXXXX",
+        "no": "+60 12-658 6823",
         "email": "sao.lip.zhou@lenog.com.my",
         "contact_image_path": "Sao Lip Zhou"
     },

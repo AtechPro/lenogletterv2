@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/static/form.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/lenogweb.ico') }}">
 </head>
 <body>
@@ -23,9 +23,11 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
+            
             <!-- Submit Button -->
             <button type="submit" class="submit-button">Login</button>
         </form>
+        <p style="text-align: center;">Want to add another login <a href="{{ url_for('register') }}">Register</a></p>
     </div>
 
     <script>
