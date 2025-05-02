@@ -8,12 +8,25 @@ from functools import wraps
 import pandas as pd
 from io import BytesIO
 from openpyxl.utils import get_column_letter
+import sys
+
+
 
 app = Flask(__name__)
 app.secret_key = 'JawaJawaJawaGahDamnDiuLeiLouMou'  # Change this to a secure key in production
 
 app.config['OUTPUT_FOLDER'] = os.path.join(os.getcwd(), 'output')
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -1,5 +1,16 @@
 from fpdf import FPDF
 import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class PDF(FPDF):
     def __init__(self):
@@ -11,8 +22,8 @@ class PDF(FPDF):
 
     def header(self):
         # Add the company header image if it exists
-        if os.path.exists('icons/Company Header.jpg'):
-            self.image('icons/Company Header.jpg', x=20, y=10, w=170)  # Adjusted x and y for better placement
+        if os.path.exists(resource_path('icons/Company Header.jpg')):
+            self.image(resource_path('icons/Company Header.jpg'), x=20, y=10, w=170)  # Adjusted x and y for better placement
         # Set the height of the header
         self.set_y(50)  # Adjusted to accommodate larger top margin if necessary
 
@@ -491,7 +502,7 @@ def resolve_signature_path(name):
     if USE_NAS_SIGNATURES:
         base_dir = "Z:\\Technical\\Engineering\\Lenog\\QAQC\\Report\\Signatures"
     else:
-        base_dir = "Signature"  # Local directory
+        base_dir = resource_path("Signature")  # Local directory
     
     # Try different image formats (.jpg, .png) for the signature
     for ext in [".jpg", ".png"]:
