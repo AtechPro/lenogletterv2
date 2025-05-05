@@ -481,18 +481,19 @@ CONTACTS = {
         "email": "sao.lip.zhou@lenog.com.my",
         "contact_image_path": "Sao Lip Zhou"
     },
-    "Asmin Mandja": {
-        "Contact title": "Asmin Mandja",
-        "no": "+60 10-935 4835",
-        "email": "asmin.mandja@lenog.com.my",
-        "contact_image_path": "Asmin Mandja"
+    "Mars Tan Han Yeong": {
+        "Contact title": "Mars Tan Han Yeong",
+        "no": "+60 17-294 0802",
+        "email": "mars@lenog.com.my",
+        "contact_image_path": "Mars"
     },
-    "Mohd Suhailin Siman": {
-        "Contact title": "Mohd Suhailin Siman",
-        "no": "+60 XXX-XXXXXXX",
-        "email": "mohd.suhailin.siman@lenog.com.my",
-        "contact_image_path": "Mohd Suhailin Siman"
-    }
+    "Jason Ng": {
+        "Contact title": "Jason Ng",
+        "no": "+60 13-908 9808",
+        "email": "jasonng@lenog.com.my",
+        "contact_image_path": "Jason"
+    },
+   
 }
 
 USE_NAS_SIGNATURES = False  # Toggle this to switch between local and NAS paths
