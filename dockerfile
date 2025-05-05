@@ -18,4 +18,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Command to run the application
-CMD ["python", "letterweb.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "letterweb:app"]

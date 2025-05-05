@@ -413,6 +413,3 @@ def export_to_excel(letter_type):
     finally:
         db.close()
 
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
