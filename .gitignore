@@ -5,6 +5,8 @@
 # Ignore all .pdf files in the /output directory
 /output/*.pdf
 
+nginx.conf
+
 __pycache__
 venv/
 *.pyc

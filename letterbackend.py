@@ -467,19 +467,19 @@ CONTACTS = {
         "Contact title": "Dwayne Marshall Labangka",
         "no": "+60 13-8340611",
         "email": "dwayne.ml@lenog.com.my",
-        "contact_image_path": "Dwayne Marshall Labangka"
+        "contact_image_path": "dwayne"
     },
     "Cheok Jia Jun": {
         "Contact title": "Cheok Jia Jun",
         "no": "+60 11-1980 1595",
         "email": "juncheok@lenog.com.my",
-        "contact_image_path": "Cheok Jia Jun"
+        "contact_image_path": "choek"
     },
     "Sao Lip Zhou": {
         "Contact title": "Sao Lip Zhou",
         "no": "+60 12-658 6823",
         "email": "sao.lip.zhou@lenog.com.my",
-        "contact_image_path": "Sao Lip Zhou"
+        "contact_image_path": "sao"
     },
     "Mars Tan Han Yeong": {
         "Contact title": "Mars Tan Han Yeong",
